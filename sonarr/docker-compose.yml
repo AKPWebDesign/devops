@@ -1,0 +1,23 @@
+version: "2"
+services:
+  sonarr:
+    image: linuxserver/sonarr:preview
+    container_name: sonarr
+    volumes:
+      - /mnt/config/sonarr:/config
+      - /mnt/downloads:/downloads
+      - /mnt/tv:/tv
+    ports:
+      - 8989
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=sonarr"
+      - "traefik.port=8989"
+      - "traefik.frontend.rule=Host:sonarr.home.akp.tools"
+    networks:
+      default:
+networks:
+  default:
+    external:
+      name: traefik_net
