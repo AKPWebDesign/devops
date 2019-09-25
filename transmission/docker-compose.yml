@@ -1,0 +1,13 @@
+version: "2"
+services:
+  transmission:
+    image: linuxserver/transmission
+    container_name: transmission
+    volumes:
+      - /mnt/config/transmission:/config
+      - /mnt/downloads/transmission:/downloads
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+    restart: unless-stopped
