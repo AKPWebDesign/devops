@@ -7,8 +7,6 @@ services:
       - /mnt/config/sonarr:/config
       - /mnt/downloads:/downloads
       - /mnt/tv:/tv
-    ports:
-      - 8989
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
