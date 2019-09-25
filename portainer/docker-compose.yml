@@ -1,0 +1,25 @@
+version: "2"
+services:
+  portainer:
+    image: portainer/portainer
+    container_name: portainer
+    restart: always
+    privileged: true
+    environment:
+      PGID: '1020'
+      PUID: '1020'
+      TZ: America/Los_Angeles
+    labels:
+      traefik.enable: "true"
+      traefik.backend: portainer
+      traefik.port: "9000"
+      traefik.frontend.rule: "Host:portainer.home.akp.tools"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /mnt/config/portainer:/data
+    networks:
+      default:
+networks:
+  default:
+    external:
+      name: traefik_net
