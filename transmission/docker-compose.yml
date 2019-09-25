@@ -16,3 +16,9 @@ services:
       - "traefik.backend=transmission"
       - "traefik.port=9091"
       - "traefik.frontend.rule=Host:transmission.home.akp.tools"
+    networks:
+      default:
+networks:
+  default:
+    external:
+      name: traefik_net
