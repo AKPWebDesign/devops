@@ -1,0 +1,20 @@
+version: "2"
+services:
+  nzbget:
+    image: linuxserver/nzbget:latest
+    container_name: nzbget
+    restart: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.backend: nzbget
+      traefik.port: "6789"
+      traefik.frontend.rule: "Host:nzbget.home.akp.tools"
+    volumes:
+      - /mnt/config/nzbget:/config
+      - /mnt/downloads/nzbget:/downloads
+    networks:
+      default:
+networks:
+  default:
+    external:
+      name: traefik_net
