@@ -14,5 +14,5 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.backend=transmission"
-      - "traefik.port=8080"
+      - "traefik.port=9091"
       - "traefik.frontend.rule=Host:transmission.home.akp.tools"
