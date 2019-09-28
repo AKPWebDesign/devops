@@ -1,0 +1,19 @@
+version: "2"
+services:
+  [service-name]:
+    image: [image-name]:[tag]
+    container_name: [service-name]
+    volumes:
+      - /config/[service-name]:/config
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=[service-name]"
+      - "traefik.port=[port]"
+      - "traefik.frontend.rule=Host:[service-name].home.akp.tools"
+    networks:
+      default:
+networks:
+  default:
+    external:
+      name: traefik_net

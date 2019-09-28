@@ -4,7 +4,7 @@ services:
     image: linuxserver/radarr:preview
     container_name: radarr
     volumes:
-      - /mnt/config/radarr:/config
+      - /config/radarr:/config
       - /mnt/downloads:/downloads
       - /mnt/movies:/movies
     restart: unless-stopped

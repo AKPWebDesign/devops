@@ -4,7 +4,7 @@ services:
     image: linuxserver/sonarr:preview
     container_name: sonarr
     volumes:
-      - /mnt/config/sonarr:/config
+      - /config/sonarr:/config
       - /mnt/downloads:/downloads
       - /mnt/tv:/tv
     restart: unless-stopped

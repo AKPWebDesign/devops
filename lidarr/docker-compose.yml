@@ -4,7 +4,7 @@ services:
     image: linuxserver/lidarr:preview
     container_name: lidarr
     volumes:
-      - /mnt/config/lidarr:/config
+      - /config/lidarr:/config
       - /mnt/downloads:/downloads
       - /mnt/music:/music
     restart: unless-stopped
