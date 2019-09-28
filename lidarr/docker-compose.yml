@@ -1,0 +1,21 @@
+version: "2"
+services:
+  lidarr:
+    image: linuxserver/lidarr:preview
+    container_name: lidarr
+    volumes:
+      - /mnt/config/lidarr:/config
+      - /mnt/downloads:/downloads
+      - /mnt/music:/music
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=lidarr"
+      - "traefik.port=8686"
+      - "traefik.frontend.rule=Host:lidarr.home.akp.tools"
+    networks:
+      default:
+networks:
+  default:
+    external:
+      name: traefik_net
