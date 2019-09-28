@@ -1,0 +1,21 @@
+version: "2"
+services:
+  radarr:
+    image: linuxserver/radarr:preview
+    container_name: radarr
+    volumes:
+      - /mnt/config/radarr:/config
+      - /mnt/downloads:/downloads
+      - /mnt/movies:/movies
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=radarr"
+      - "traefik.port=7878"
+      - "traefik.frontend.rule=Host:radarr.home.akp.tools"
+    networks:
+      default:
+networks:
+  default:
+    external:
+      name: traefik_net
