@@ -4,6 +4,10 @@ services:
     image: linuxserver/nzbget:latest
     container_name: nzbget
     restart: unless-stopped
+    environment:
+      - PUID=1020
+      - PGID=1020
+      - TZ=America/Los_Angeles
     labels:
       traefik.enable: "true"
       traefik.backend: nzbget
@@ -11,7 +15,10 @@ services:
       traefik.frontend.rule: "Host:nzbget.home.akp.tools"
     volumes:
       - /mnt/config/nzbget:/config
-      - /mnt/downloads/nzbget:/downloads
+      # handle each nzbget download folder separately. we only need the /completed folder to be synced to NFS. The rest
+      # of them can stay bind mounted within the Docker VM, as NFS performance is very poor in comparison.
+      - /downloads/nzbget/:/downloads/
+      - /mnt/downloads/nzbget/completed:/downloads/completed
     networks:
       default:
 networks:

@@ -1,12 +1,11 @@
 version: "2"
 services:
-  lidarr:
-    image: linuxserver/lidarr:preview
-    container_name: lidarr
+  jackett:
+    image: linuxserver/jackett:development
+    container_name: jackett
     volumes:
-      - /config/lidarr:/config
+      - /config/jackett:/config
       - /mnt/downloads:/downloads
-      - /mnt/music:/music
     environment:
       - PUID=1020
       - PGID=1020
@@ -14,9 +13,9 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.backend=lidarr"
-      - "traefik.port=8686"
-      - "traefik.frontend.rule=Host:lidarr.home.akp.tools"
+      - "traefik.backend=jackett"
+      - "traefik.port=9117"
+      - "traefik.frontend.rule=Host:jackett.home.akp.tools"
     networks:
       default:
 networks:

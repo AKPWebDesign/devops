@@ -1,0 +1,10 @@
+version: "2"
+services:
+  configcopier:
+    image: akpwd/rsync
+    command: sh -c "rsync -r /config/ /mnt/config && chown -R 1020:1020 /mnt/config/ && sleep 1h"
+    restart: always
+    container_name: configcopier
+    volumes:
+      - /mnt/config:/mnt/config
+      - /config:/config

@@ -5,6 +5,8 @@ services:
     container_name: portainer
     restart: always
     privileged: true
+    ports:
+      - 9000:9000
     environment:
       PGID: '1020'
       PUID: '1020'
@@ -13,7 +15,7 @@ services:
       traefik.enable: "true"
       traefik.backend: portainer
       traefik.port: "9000"
-      traefik.frontend.rule: "Host:portainer.home.akp.tools"
+      traefik.frontend.rule: "Host:portainer.home.akp.tools,docker.home.akp.tools"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /mnt/config/portainer:/data

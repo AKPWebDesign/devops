@@ -7,6 +7,10 @@ services:
       - /config/sonarr:/config
       - /mnt/downloads:/downloads
       - /mnt/tv:/tv
+    environment:
+      - PUID=1020
+      - PGID=1020
+      - TZ=America/Los_Angeles
     restart: unless-stopped
     labels:
       - "traefik.enable=true"

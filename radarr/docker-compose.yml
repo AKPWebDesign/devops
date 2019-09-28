@@ -1,12 +1,16 @@
 version: "2"
 services:
   radarr:
-    image: linuxserver/radarr:preview
+    image: linuxserver/radarr:latest
     container_name: radarr
     volumes:
       - /config/radarr:/config
       - /mnt/downloads:/downloads
       - /mnt/movies:/movies
+    environment:
+      - PUID=1020
+      - PGID=1020
+      - TZ=America/Los_Angeles
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
