@@ -11,11 +11,10 @@ services:
       - USER=username #optional
       - PASS=password #optional
     volumes:
-      - /mnt/config/transmission:/config
-      # main downloads folder is a bind mount, complete downloads get transferred over to NFS share
-      - /downloads/transmission:/downloads
-      - /mnt/downloads/transmission/complete:/downloads/complete
+      - /Pool/Docker/transmission:/config
+      - /Pool/Downloads/transmission:/downloads
     ports:
+      - 9091:9091
       - 51413:51413
       - 51413:51413/udp
     restart: unless-stopped

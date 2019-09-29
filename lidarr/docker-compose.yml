@@ -4,9 +4,9 @@ services:
     image: linuxserver/lidarr:preview
     container_name: lidarr
     volumes:
-      - /config/lidarr:/config
-      - /mnt/downloads:/downloads
-      - /mnt/music:/music
+      - /Pool/Docker/lidarr:/config
+      - /Pool/Downloads:/downloads
+      - /Pool/Music:/music
     environment:
       - PUID=1020
       - PGID=1020

@@ -5,9 +5,9 @@ services:
     container_name: traefik
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /mnt/config/traefik/traefik.toml:/traefik.toml
-      - /mnt/config/traefik/acme.json:/acme.json
-      - /mnt/config/traefik/rules/:/rules/
+      - /Pool/Docker/traefik/traefik.toml:/traefik.toml
+      - /Pool/Docker/traefik/acme.json:/acme.json
+      - /Pool/Docker/traefik/rules/:/rules/
     ports:
       - 80:80
       - 443:443

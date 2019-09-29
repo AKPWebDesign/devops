@@ -4,8 +4,8 @@ services:
     image: linuxserver/tautulli:develop
     container_name: tautulli
     volumes:
-      - /config/tautulli:/config
-      - /mnt/downloads:/downloads
+      - /Pool/Docker/tautulli:/config
+      - /Pool/Downloads:/downloads
     environment:
       - PUID=1020
       - PGID=1020

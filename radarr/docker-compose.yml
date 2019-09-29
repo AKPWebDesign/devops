@@ -4,9 +4,9 @@ services:
     image: linuxserver/radarr:latest
     container_name: radarr
     volumes:
-      - /config/radarr:/config
-      - /mnt/downloads:/downloads
-      - /mnt/movies:/movies
+      - /Pool/Docker/radarr:/config
+      - /Pool/Downloads:/downloads
+      - /Pool/Movies:/movies
     environment:
       - PUID=1020
       - PGID=1020

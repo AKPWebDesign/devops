@@ -4,8 +4,8 @@ services:
     image: linuxserver/jackett:development
     container_name: jackett
     volumes:
-      - /config/jackett:/config
-      - /mnt/downloads:/downloads
+      - /Pool/Docker/jackett:/config
+      - /Pool/Downloads:/downloads
     environment:
       - PUID=1020
       - PGID=1020

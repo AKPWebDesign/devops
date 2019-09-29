@@ -4,7 +4,7 @@ services:
     image: linuxserver/ombi:development
     container_name: ombi
     volumes:
-      - /mnt/config/ombi:/config
+      - /Pool/Docker/ombi:/config
     environment:
       - PUID=1020
       - PGID=1020

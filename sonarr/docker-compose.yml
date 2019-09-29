@@ -4,9 +4,9 @@ services:
     image: linuxserver/sonarr:preview
     container_name: sonarr
     volumes:
-      - /config/sonarr:/config
-      - /mnt/downloads:/downloads
-      - /mnt/tv:/tv
+      - /Pool/Docker/sonarr:/config
+      - /Pool/Downloads:/downloads
+      - /Pool/TVShows:/tv
     environment:
       - PUID=1020
       - PGID=1020

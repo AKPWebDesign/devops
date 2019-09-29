@@ -1,0 +1,26 @@
+version: "2"
+services:
+  netdata:
+    image: netdata/netdata:latest
+    container_name: netdata
+    restart: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.backend: netdata
+      traefik.port: "19999"
+      traefik.frontend.rule: "Host:netdata.home.akp.tools"
+      traefik.frontend.auth.basic: "" # .htaccess user/pass line. remember to escape $ (use $$ instead)
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      default:
+networks:
+  default:
+    external:
+      name: traefik_net
