@@ -1,0 +1,25 @@
+version: "2"
+services:
+  radarr4k:
+    image: linuxserver/radarr:latest
+    container_name: radarr4k
+    volumes:
+      - /Pool/Docker/radarr4k:/config
+      - /Pool/Downloads:/downloads
+      - /Pool/Movies:/movies
+    environment:
+      - PUID=1020
+      - PGID=1020
+      - TZ=America/Los_Angeles
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=radarr4k"
+      - "traefik.port=7878"
+      - "traefik.frontend.rule=Host:radarr4k.home.akp.tools"
+    networks:
+      default:
+networks:
+  default:
+    external:
+      name: traefik_net

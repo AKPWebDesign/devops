@@ -1,0 +1,25 @@
+version: "2"
+services:
+  sonarr4k:
+    image: linuxserver/sonarr:preview
+    container_name: sonarr4k
+    volumes:
+      - /Pool/Docker/sonarr4k:/config
+      - /Pool/Downloads:/downloads
+      - /Pool/TVShows:/tv
+    environment:
+      - PUID=1020
+      - PGID=1020
+      - TZ=America/Los_Angeles
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=sonarr4k"
+      - "traefik.port=8989"
+      - "traefik.frontend.rule=Host:sonarr4k.home.akp.tools"
+    networks:
+      default:
+networks:
+  default:
+    external:
+      name: traefik_net

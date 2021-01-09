@@ -1,0 +1,22 @@
+version: "2"
+services:
+  synclounge:
+    image: starbix/synclounge:latest
+    container_name: synclounge
+    environment:
+      - DOMAIN=sync.plex.akp.tools
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.webui.backend=synclounge"
+      - "traefik.webui.port=8088"
+      - "traefik.webui.frontend.rule=Host:sync.plex.akp.tools"
+      - "traefik.slserver.backend=slserver"
+      - "traefik.slserver.port=8089"
+      - "traefik.slserver.frontend.rule=Host:sync.plex.akp.tools; PathPrefix:/slserver"
+    networks:
+      default:
+networks:
+  default:
+    external:
+      name: traefik_net

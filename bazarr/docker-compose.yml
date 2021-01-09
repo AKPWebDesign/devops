@@ -1,0 +1,25 @@
+version: "2"
+services:
+  bazarr:
+    image: linuxserver/bazarr:latest
+    container_name: bazarr
+    volumes:
+      - /Pool/Docker/bazarr:/config
+      - /Pool/Movies:/movies
+      - /Pool/TVShows:/tv
+    environment:
+      - PUID=1020
+      - PGID=1020
+      - TZ=America/Los_Angeles
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=bazarr"
+      - "traefik.port=6767"
+      - "traefik.frontend.rule=Host:bazarr.home.akp.tools"
+    networks:
+      default:
+networks:
+  default:
+    external:
+      name: traefik_net
