@@ -1,25 +1,46 @@
 version: "2"
 services:
-  transmission:
-    image: traefik:maroilles
-    container_name: traefik
+  traefik:
+    image: traefik:v2.3
+    restart: unless-stopped
+    env_file:
+      - ../.env
+      - .env
+    command:
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --providers.docker
+      - --providers.docker.exposedByDefault=false
+      - --providers.file.directory=/rules/
+      - --api
+      - --certificatesresolvers.le.acme.email=${LETS_ENCRYPT_EMAIL}
+      - --certificatesresolvers.le.acme.storage=/acme.json
+      - --certificatesresolvers.le.acme.tlschallenge=true
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /Pool/Docker/traefik/traefik.toml:/traefik.toml
-      - /Pool/Docker/traefik/acme.json:/acme.json
-      - /Pool/Docker/traefik/rules/:/rules/
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ${CONFIG_FOLDER}/traefik/acme.json:/acme.json
+      - ${CONFIG_FOLDER}/traefik/rules/:/rules/
     ports:
       - 80:80
       - 443:443
-    restart: unless-stopped
     labels:
-      - "traefik.enable=true"
-      - "traefik.backend=traefik"
-      - "traefik.port=8080"
-      - "traefik.frontend.rule=Host:traefik.home.akp.tools"
-    networks:
-      default:
+      - traefik.enable=true
+      - traefik.http.routers.traefik.rule=Host(`${TRAEFIK_HOST}`)
+      - traefik.http.routers.traefik.service=api@internal
+      - traefik.http.routers.traefik.middlewares=traefik-admin
+      - traefik.http.routers.traefik.tls.certresolver=le
+      - traefik.http.routers.traefik.entrypoints=websecure
+      - traefik.http.middlewares.traefik-admin.basicauth.users=${TRAEFIK_API_BASICAUTH}
+
+      # middleware to redirect to https
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+
+      # add global redirect to https
+      - traefik.http.routers.redirs.rule=hostregexp(`{host:.+}`)
+      - traefik.http.routers.redirs.entrypoints=web
+      - traefik.http.routers.redirs.middlewares=redirect-to-https
+
 networks:
   default:
     external:
-      name: traefik_net
+      name: ${TRAEFIK_NETWORK}
