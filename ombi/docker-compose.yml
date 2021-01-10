@@ -2,22 +2,22 @@ version: "2"
 services:
   ombi:
     image: linuxserver/ombi:development
-    container_name: ombi
+    restart: unless-stopped
     volumes:
-      - /Pool/Docker/ombi:/config
+      - ${CONFIG_DIR}/ombi:/config
     environment:
       - PUID=1020
       - PGID=1020
       - TZ=America/Los_Angeles
-    restart: unless-stopped
     labels:
-      - "traefik.enable=true"
-      - "traefik.backend=ombi"
-      - "traefik.port=3579"
-      - "traefik.frontend.rule=Host:requests.plex.akp.tools"
+      - traefik.enable=true
+      - traefik.http.routers.ombi.rule=Host(`${HOST}`)
+      - traefik.http.services.ombi.loadbalancer.server.port=3579
+      - traefik.http.routers.ombi.tls.certresolver=le
+      - traefik.http.routers.ombi.entrypoints=websecure
     networks:
       default:
 networks:
   default:
     external:
-      name: traefik_net
+      name: ${TRAEFIK_NETWORK}

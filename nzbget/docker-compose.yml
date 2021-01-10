@@ -2,23 +2,23 @@ version: "2"
 services:
   nzbget:
     image: linuxserver/nzbget:latest
-    container_name: nzbget
     restart: unless-stopped
+    volumes:
+      - ${CONFIG_DIR}/nzbget:/config
+      - ${DOWNLOADS_DIR}/nzbget/:/downloads/
     environment:
       - PUID=1020
       - PGID=1020
       - TZ=America/Los_Angeles
     labels:
-      traefik.enable: "true"
-      traefik.backend: nzbget
-      traefik.port: "6789"
-      traefik.frontend.rule: "Host:nzbget.home.akp.tools"
-    volumes:
-      - /Pool/Docker/nzbget:/config
-      - /Pool/Downloads/nzbget/:/downloads/
+      - traefik.enable=true
+      - traefik.http.routers.nzbget.rule=Host(`${HOST}`)
+      - traefik.http.services.nzbget.loadbalancer.server.port=6789
+      - traefik.http.routers.nzbget.tls.certresolver=le
+      - traefik.http.routers.nzbget.entrypoints=websecure
     networks:
       default:
 networks:
   default:
     external:
-      name: traefik_net
+      name: ${TRAEFIK_NETWORK}

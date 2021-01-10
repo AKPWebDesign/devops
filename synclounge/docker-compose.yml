@@ -2,21 +2,45 @@ version: "2"
 services:
   synclounge:
     image: starbix/synclounge:latest
-    container_name: synclounge
-    environment:
-      - DOMAIN=sync.plex.akp.tools
     restart: unless-stopped
+    environment:
+      - DOMAIN=${HOST}
+      - LOGSPOUT=ignore
     labels:
-      - "traefik.enable=true"
-      - "traefik.webui.backend=synclounge"
-      - "traefik.webui.port=8088"
-      - "traefik.webui.frontend.rule=Host:sync.plex.akp.tools"
-      - "traefik.slserver.backend=slserver"
-      - "traefik.slserver.port=8089"
-      - "traefik.slserver.frontend.rule=Host:sync.plex.akp.tools; PathPrefix:/slserver"
+      - traefik.enable=true
+
+      # web server service
+      - traefik.http.services.synclounge.loadbalancer.server.port=8088
+
+      # web server (HTTP)
+      - traefik.http.routers.synclounge.rule=Host(`${HOST}`)
+      - traefik.http.routers.synclounge.service=synclounge
+      - traefik.http.routers.synclounge.entrypoints=web
+
+      # web server (SSL)
+      - traefik.http.routers.synclounge-ssl.rule=Host(`${HOST}`)
+      - traefik.http.routers.synclounge-ssl.service=synclounge
+      - traefik.http.routers.synclounge-ssl.tls.certresolver=le
+      - traefik.http.routers.synclounge-ssl.entrypoints=websecure
+
+      # socket server service
+      - traefik.http.services.synclounge-svr.loadbalancer.server.port=8089
+
+      # socket server (HTTP)
+      - traefik.http.routers.synclounge-svr.rule=Host(`${HOST}`) && Path(`/slserver`)
+      - traefik.http.routers.synclounge-svr.service=synclounge-svr
+      - traefik.http.routers.synclounge-svr.entrypoints=web
+
+      # socket server (SSL)
+      - traefik.http.routers.synclounge-svr-ssl.rule=Host(`${HOST}`) && Path(`/slserver`)
+      - traefik.http.routers.synclounge-svr-ssl.service=synclounge-svr
+      - traefik.http.routers.synclounge-svr-ssl.tls.certresolver=le
+      - traefik.http.routers.synclounge-svr-ssl.entrypoints=websecure
+
+
     networks:
       default:
 networks:
   default:
     external:
-      name: traefik_net
+      name: ${TRAEFIK_NETWORK}

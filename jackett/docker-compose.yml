@@ -2,23 +2,23 @@ version: "2"
 services:
   jackett:
     image: linuxserver/jackett:development
-    container_name: jackett
+    restart: unless-stopped
     volumes:
-      - /Pool/Docker/jackett:/config
-      - /Pool/Downloads:/downloads
+      - ${CONFIG_DIR}/jackett:/config
+      - ${DOWNLOADS_DIR}:/downloads
     environment:
       - PUID=1020
       - PGID=1020
       - TZ=America/Los_Angeles
-    restart: unless-stopped
     labels:
-      - "traefik.enable=true"
-      - "traefik.backend=jackett"
-      - "traefik.port=9117"
-      - "traefik.frontend.rule=Host:jackett.home.akp.tools"
+      - traefik.enable=true
+      - traefik.http.routers.jackett.rule=Host(`${HOST}`)
+      - traefik.http.services.jackett.loadbalancer.server.port=9117
+      - traefik.http.routers.jackett.tls.certresolver=le
+      - traefik.http.routers.jackett.entrypoints=websecure
     networks:
       default:
 networks:
   default:
     external:
-      name: traefik_net
+      name: ${TRAEFIK_NETWORK}

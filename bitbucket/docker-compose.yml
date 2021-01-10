@@ -1,0 +1,39 @@
+version: "2"
+services:
+  bitbucket:
+    image: atlassian/bitbucket-server:6.3.5-ubuntu-jdk11
+    restart: unless-stopped
+    volumes:
+      - ${CONFIG_DIR}/bitbucket/application:/var/atlassian/application-data/bitbucket
+    environment:
+      - PUID=1020
+      - PGID=1020
+      - TZ=America/Los_Angeles
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.bitbucket.rule=Host(`${HOST}`)
+      - traefik.http.services.bitbucket.loadbalancer.server.port=7990
+      - traefik.http.routers.bitbucket.tls.certresolver=le
+      - traefik.http.routers.bitbucket.entrypoints=websecure
+    # TODO: tcp config to allow git from outside network
+    ports:
+      - 7999:7999
+    networks:
+      default:
+    depends_on:
+      - db
+  db:
+    image: postgres:11
+    volumes:
+      - ${CONFIG_DIR}/bitbucket/db:/var/lib/postgresql/data
+    restart: always
+    environment:
+      POSTGRES_DB: bitbucket
+      POSTGRES_USER: bitbucket
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      default:
+networks:
+  default:
+    external:
+      name: ${TRAEFIK_NETWORK}

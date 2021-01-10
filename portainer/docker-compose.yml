@@ -1,25 +1,25 @@
 version: "2"
 services:
   portainer:
-    image: portainer/portainer
-    container_name: portainer
+    image: portainer/portainer-ce
     restart: always
     privileged: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${CONFIG_DIR}/portainer:/data
     environment:
       PGID: '1020'
       PUID: '1020'
       TZ: America/Los_Angeles
     labels:
-      traefik.enable: "true"
-      traefik.backend: portainer
-      traefik.port: "9000"
-      traefik.frontend.rule: "Host:docker.home.akp.tools"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /Pool/Docker/portainer:/data
+      - traefik.enable=true
+      - traefik.http.routers.portainer.rule=Host(`${HOST}`)
+      - traefik.http.services.portainer.loadbalancer.server.port=9000
+      - traefik.http.routers.portainer.tls.certresolver=le
+      - traefik.http.routers.portainer.entrypoints=websecure
     networks:
       default:
 networks:
   default:
     external:
-      name: traefik_net
+      name: ${TRAEFIK_NETWORK}

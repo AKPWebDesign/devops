@@ -1,0 +1,22 @@
+version: "2"
+services:
+  musicbot:
+    image: docker.pkg.github.com/akpwebdesign/octave/music-bot:latest
+    environment:
+      - TZ=America/Los_Angeles
+    volumes:
+      - ${CONFIG_DIR}/musicbot/config:/app/config
+    restart: unless-stopped
+    depends_on:
+      - redis
+      - rethink
+
+  redis:
+    image: redis
+    restart: unless-stopped
+
+  rethink:
+    image: rethinkdb
+    restart: unless-stopped
+    volumes:
+      - ${CONFIG_DIR}/rethink:/data

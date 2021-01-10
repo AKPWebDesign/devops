@@ -1,76 +1,112 @@
-version: "2"
+version: "3"
+
 services:
   teslamate:
     image: teslamate/teslamate:latest
-    volumes:
-      - /Pool/Docker/teslamate/import:/opt/app/import
     restart: unless-stopped
+    depends_on:
+      - database
+      - mosquitto
     environment:
-      - TZ=America/Los_Angeles
-      - DATABASE_USER=teslamate
-      - DATABASE_PASS=password
-      - DATABASE_NAME=teslamate
+      - DATABASE_USER=${TM_DB_USER}
+      - DATABASE_PASS=${TM_DB_PASS}
+      - DATABASE_NAME=${TM_DB_NAME}
       - DATABASE_HOST=database
       - MQTT_HOST=mosquitto
+      - VIRTUAL_HOST=${HOST}
+      - CHECK_ORIGIN=true
+      - TZ=America/Los_Angeles
+    volumes:
+      - ${CONFIG_DIR}/teslamate/import/:/opt/app/import
     labels:
-      - "traefik.enable=true"
-      - "traefik.port=4000"
-      - "traefik.frontend.rule=Host:teslamate.home.akp.tools"
-      - "traefik.frontend.auth.basic.users=" # .htaccess user/pass line. remember to escape $ (use $$ instead)
+      - traefik.enable=true
+      # SSL router setup
+      - traefik.http.routers.teslamate.rule=Host(`${HOST}`)
+      - traefik.http.routers.teslamate.middlewares=teslamate-auth
+      - traefik.http.routers.teslamate.tls.certresolver=le
+      - traefik.http.routers.teslamate.entrypoints=websecure
+      - traefik.http.routers.teslamate.service=teslamate
+      - traefik.http.services.teslamate.loadbalancer.server.port=4000
+
+      # add basic auth
+      - traefik.http.middlewares.teslamate-auth.basicauth.users=${TM_BASICAUTH}
+
+      # websocket router setup
+      - traefik.http.routers.teslamate-ws.rule=Host(`${HOST}`) && Path(`/live/websocket`)
+      - traefik.http.routers.teslamate-ws.service=teslamate
+      - traefik.http.routers.teslamate-ws.entrypoints=websecure
+      - traefik.http.routers.teslamate-ws.tls.certresolver=le
     cap_drop:
       - all
     networks:
-      - default
+      default:
 
   database:
     image: postgres:13
     restart: unless-stopped
     environment:
-      - TZ=America/Los_Angeles
-      - POSTGRES_USER=teslamate
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=teslamate
+      - POSTGRES_USER=${TM_DB_USER}
+      - POSTGRES_PASSWORD=${TM_DB_PASS}
+      - POSTGRES_DB=${TM_DB_NAME}
     volumes:
-      - /Pool/Docker/teslamate/database:/var/lib/postgresql/data
+      - ${CONFIG_DIR}/teslamate/database:/var/lib/postgresql/data
     networks:
-      - default
+      default:
 
   grafana:
     image: teslamate/grafana:latest
     restart: unless-stopped
+    depends_on:
+      - database
     environment:
-      - TZ=America/Los_Angeles
-      - DATABASE_USER=teslamate
-      - DATABASE_PASS=password
-      - DATABASE_NAME=teslamate
+      - DATABASE_USER=${TM_DB_USER}
+      - DATABASE_PASS=${TM_DB_PASS}
+      - DATABASE_NAME=${TM_DB_NAME}
       - DATABASE_HOST=database
-    labels:
-      - "traefik.enable=true"
-      - "traefik.port=4000"
-      - "traefik.frontend.rule=Host:tesla-grafana.home.akp.tools"
-      - "traefik.frontend.auth.basic.users=" # .htaccess user/pass line. remember to escape $ (use $$ instead)
+      - GRAFANA_PASSWD=${GRAFANA_PW}
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PW}
+      - GF_AUTH_ANONYMOUS_ENABLED=false
+      - GF_SERVER_DOMAIN=${HOST}
+      - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s/grafana
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
     volumes:
-      - /Pool/Docker/teslamate/grafana:/var/lib/grafana
+      - teslamate-grafana-data:/var/lib/grafana
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.tm-grafana.rule=Host(`${HOST}`) && (Path(`/grafana`) || PathPrefix(`/grafana/`))
+      - traefik.http.routers.tm-grafana.tls.certresolver=le
+      - traefik.http.routers.tm-grafana.entrypoints=websecure
+      - traefik.http.routers.tm-grafana.service=tm-grafana
+      - traefik.http.services.tm-grafana.loadbalancer.server.port=3000
     networks:
-      - default
+      default:
 
   mosquitto:
     image: eclipse-mosquitto:1.6
     restart: unless-stopped
-    environment:
-      - TZ=America/Los_Angeles
-    labels:
-      - "traefik.enable=true"
-      - "traefik.port=1883"
-      - "traefik.frontend.rule=Host:tesla-mosquitto.home.akp.tools"
-      - "traefik.frontend.auth.basic.users=" # .htaccess user/pass line. remember to escape $ (use $$ instead)
     volumes:
-      - /Pool/Docker/teslamate/mosquitto/config:/mosquitto/config
-      - /Pool/Docker/teslamate/mosquitto/data:/mosquitto/data
+      - teslamate-mosquitto-conf:/mosquitto/config
+      - teslamate-mosquitto-data:/mosquitto/data
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.tm-mosquitto.rule=Host(`${HOST}`) && (Path(`/mosquitto`) || PathPrefix(`/mosquitto/`))
+      - traefik.http.routers.tm-mosquitto.tls.certresolver=le
+      - traefik.http.routers.tm-mosquitto.entrypoints=websecure
+      - traefik.http.routers.tm-mosquitto.service=tm-mosquitto
+      - traefik.http.services.tm-mosquitto.loadbalancer.server.port=1883
+
+      # reusing basic auth from above
+      - traefik.http.routers.tm-mosquitto.middlewares=teslamate-auth
     networks:
-      - default
+      default:
+
+volumes:
+  teslamate-grafana-data:
+  teslamate-mosquitto-conf:
+  teslamate-mosquitto-data:
 
 networks:
   default:
     external:
-      name: traefik_net
+      name: ${TRAEFIK_NETWORK}

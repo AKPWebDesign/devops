@@ -8,18 +8,18 @@ services:
       - PGID=1020
       - TZ=America/Los_Angeles
       - TRANSMISSION_WEB_HOME=/transmission-web-control/ #optional
-      - USER=username #optional
-      - PASS=password #optional
+      - USER=${USER} #optional
+      - PASS=${PASS} #optional
     volumes:
-      - /Pool/Docker/transmission:/config
-      - /Pool/Downloads/transmission:/downloads
+      - ${CONFIG_DIR}/transmission:/config
+      - ${DOWNLOADS_DIR}/transmission:/downloads
     ports:
       - 9091:9091
       - 51413:51413
       - 51413:51413/udp
     labels:
       - traefik.enable=true
-      - traefik.http.routers.transmission.rule=Host(`transmission.home.akp.tools`)
+      - traefik.http.routers.transmission.rule=Host(`${HOST}`)
       - traefik.http.services.transmission.loadbalancer.server.port=9091
       - traefik.http.routers.transmission.tls.certresolver=le
       - traefik.http.routers.transmission.entrypoints=websecure
@@ -29,4 +29,4 @@ services:
 networks:
   default:
     external:
-      name: traefik_net
+      name: ${TRAEFIK_NETWORK}

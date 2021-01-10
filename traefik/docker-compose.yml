@@ -4,6 +4,7 @@ services:
     image: traefik:v2.3
     restart: unless-stopped
     command:
+      - --global.sendAnonymousUsage=false
       - --entrypoints.web.address=:80
       - --entrypoints.websecure.address=:443
       - --providers.docker
@@ -15,14 +16,14 @@ services:
       - --certificatesresolvers.le.acme.tlschallenge=true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ${CONFIG_FOLDER}/traefik/acme.json:/acme.json
-      - ${CONFIG_FOLDER}/traefik/rules/:/rules/
+      - ${CONFIG_DIR}/traefik/acme.json:/acme.json
+      - ${CONFIG_DIR}/traefik/rules/:/rules/
     ports:
       - 80:80
       - 443:443
     labels:
       - traefik.enable=true
-      - traefik.http.routers.traefik.rule=Host(`${TRAEFIK_HOST}`)
+      - traefik.http.routers.traefik.rule=Host(`${HOST}`)
       - traefik.http.routers.traefik.service=api@internal
       - traefik.http.routers.traefik.middlewares=traefik-admin
       - traefik.http.routers.traefik.tls.certresolver=le
@@ -33,9 +34,11 @@ services:
       - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
 
       # add global redirect to https
-      - traefik.http.routers.redirs.rule=hostregexp(`{host:.+}`)
+      - traefik.http.routers.redirs.rule=HostRegexp(`{host:^[^(?:synclounge)].+}`)
       - traefik.http.routers.redirs.entrypoints=web
       - traefik.http.routers.redirs.middlewares=redirect-to-https
+    networks:
+      default:
 
 networks:
   default:

@@ -5,11 +5,11 @@ services:
     restart: unless-stopped
     network_mode: host
     volumes:
-      - /Pool/Docker/plex:/config
-      - /Pool/Docker/plex/transcode:/transcode
-      - /Pool/Movies:/movies
-      - /Pool/TVShows:/tv
-      - /Pool/Music:/music
+      - ${CONFIG_DIR}/plex:/config
+      - ${CONFIG_DIR}/plex/transcode:/transcode
+      - ${MOVIES_DIR}:/movies
+      - ${TV_DIR}:/tv
+      - ${MUSIC_DIR}:/music
     environment:
       - PUID=1020
       - PGID=1020

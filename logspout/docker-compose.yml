@@ -1,0 +1,10 @@
+version: "2"
+services:
+  logspout:
+    image: gliderlabs/logspout:latest
+    command: "${SYSLOG_DEST}"
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - TZ=America/Los_Angeles

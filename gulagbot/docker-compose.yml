@@ -1,0 +1,8 @@
+version: "2"
+services:
+  gulagbot:
+    image: docker.pkg.github.com/akpwebdesign/gulag-bot/gulag-bot:latest
+    environment:
+      - TOKEN=${DISCORD_TOKEN}
+      - TZ=America/Los_Angeles
+    restart: unless-stopped

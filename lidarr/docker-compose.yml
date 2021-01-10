@@ -2,24 +2,24 @@ version: "2"
 services:
   lidarr:
     image: linuxserver/lidarr:preview
-    container_name: lidarr
     volumes:
-      - /Pool/Docker/lidarr:/config
-      - /Pool/Downloads:/downloads
-      - /Pool/Music:/music
+      - ${CONFIG_DIR}/lidarr:/config
+      - ${DOWNLOADS_DIR}:/downloads
+      - ${MUSIC_DIR}:/music
     environment:
       - PUID=1020
       - PGID=1020
       - TZ=America/Los_Angeles
     restart: unless-stopped
     labels:
-      - "traefik.enable=true"
-      - "traefik.backend=lidarr"
-      - "traefik.port=8686"
-      - "traefik.frontend.rule=Host:lidarr.home.akp.tools"
+      - traefik.enable=true
+      - traefik.http.routers.lidarr.rule=Host(`${HOST}`)
+      - traefik.http.services.lidarr.loadbalancer.server.port=8686
+      - traefik.http.routers.lidarr.tls.certresolver=le
+      - traefik.http.routers.lidarr.entrypoints=websecure
     networks:
       default:
 networks:
   default:
     external:
-      name: traefik_net
+      name: ${TRAEFIK_NETWORK}

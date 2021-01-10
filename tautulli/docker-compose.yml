@@ -2,23 +2,22 @@ version: "2"
 services:
   tautulli:
     image: linuxserver/tautulli:develop
-    container_name: tautulli
+    restart: unless-stopped
     volumes:
-      - /Pool/Docker/tautulli:/config
-      - /Pool/Downloads:/downloads
+      - ${CONFIG_DIR}/tautulli:/config
     environment:
       - PUID=1020
       - PGID=1020
       - TZ=America/Los_Angeles
-    restart: unless-stopped
     labels:
-      - "traefik.enable=true"
-      - "traefik.backend=tautulli"
-      - "traefik.port=8181"
-      - "traefik.frontend.rule=Host:tautulli.home.akp.tools"
+      - traefik.enable=true
+      - traefik.http.routers.tautulli.rule=Host(`${HOST}`)
+      - traefik.http.services.tautulli.loadbalancer.server.port=8181
+      - traefik.http.routers.tautulli.tls.certresolver=le
+      - traefik.http.routers.tautulli.entrypoints=websecure
     networks:
       default:
 networks:
   default:
     external:
-      name: traefik_net
+      name: ${TRAEFIK_NETWORK}

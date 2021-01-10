@@ -2,24 +2,24 @@ version: "2"
 services:
   bazarr:
     image: linuxserver/bazarr:latest
-    container_name: bazarr
+    restart: unless-stopped
     volumes:
-      - /Pool/Docker/bazarr:/config
-      - /Pool/Movies:/movies
-      - /Pool/TVShows:/tv
+      - ${CONFIG_DIR}/bazarr:/config
+      - ${MOVIES_DIR}:/movies
+      - ${TV_DIR}:/tv
     environment:
       - PUID=1020
       - PGID=1020
       - TZ=America/Los_Angeles
-    restart: unless-stopped
     labels:
-      - "traefik.enable=true"
-      - "traefik.backend=bazarr"
-      - "traefik.port=6767"
-      - "traefik.frontend.rule=Host:bazarr.home.akp.tools"
+      - traefik.enable=true
+      - traefik.http.routers.bazarr.rule=Host(`${HOST}`)
+      - traefik.http.services.bazarr.loadbalancer.server.port=6767
+      - traefik.http.routers.bazarr.tls.certresolver=le
+      - traefik.http.routers.bazarr.entrypoints=websecure
     networks:
       default:
 networks:
   default:
     external:
-      name: traefik_net
+      name: ${TRAEFIK_NETWORK}
