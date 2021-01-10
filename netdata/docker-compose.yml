@@ -9,7 +9,7 @@ services:
       traefik.backend: netdata
       traefik.port: "19999"
       traefik.frontend.rule: "Host:netdata.home.akp.tools"
-      traefik.frontend.auth.basic: "" # .htaccess user/pass line. remember to escape $ (use $$ instead)
+      traefik.frontend.auth.basic.users: "" # .htaccess user/pass line. remember to escape $ (use $$ instead)
     cap_add:
       - SYS_PTRACE
     security_opt:

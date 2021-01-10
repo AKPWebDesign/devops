@@ -2,16 +2,16 @@ version: "2"
 services:
   plex:
     image: linuxserver/plex:latest
-    container_name: plex
+    restart: unless-stopped
     network_mode: host
     volumes:
       - /Pool/Docker/plex:/config
       - /Pool/Docker/plex/transcode:/transcode
       - /Pool/Movies:/movies
       - /Pool/TVShows:/tv
+      - /Pool/Music:/music
     environment:
       - PUID=1020
       - PGID=1020
       - TZ=America/Los_Angeles
       - VERSION=latest
-    restart: unless-stopped

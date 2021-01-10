@@ -1,0 +1,76 @@
+version: "2"
+services:
+  teslamate:
+    image: teslamate/teslamate:latest
+    volumes:
+      - /Pool/Docker/teslamate/import:/opt/app/import
+    restart: unless-stopped
+    environment:
+      - TZ=America/Los_Angeles
+      - DATABASE_USER=teslamate
+      - DATABASE_PASS=password
+      - DATABASE_NAME=teslamate
+      - DATABASE_HOST=database
+      - MQTT_HOST=mosquitto
+    labels:
+      - "traefik.enable=true"
+      - "traefik.port=4000"
+      - "traefik.frontend.rule=Host:teslamate.home.akp.tools"
+      - "traefik.frontend.auth.basic.users=" # .htaccess user/pass line. remember to escape $ (use $$ instead)
+    cap_drop:
+      - all
+    networks:
+      - default
+
+  database:
+    image: postgres:13
+    restart: unless-stopped
+    environment:
+      - TZ=America/Los_Angeles
+      - POSTGRES_USER=teslamate
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=teslamate
+    volumes:
+      - /Pool/Docker/teslamate/database:/var/lib/postgresql/data
+    networks:
+      - default
+
+  grafana:
+    image: teslamate/grafana:latest
+    restart: unless-stopped
+    environment:
+      - TZ=America/Los_Angeles
+      - DATABASE_USER=teslamate
+      - DATABASE_PASS=password
+      - DATABASE_NAME=teslamate
+      - DATABASE_HOST=database
+    labels:
+      - "traefik.enable=true"
+      - "traefik.port=4000"
+      - "traefik.frontend.rule=Host:tesla-grafana.home.akp.tools"
+      - "traefik.frontend.auth.basic.users=" # .htaccess user/pass line. remember to escape $ (use $$ instead)
+    volumes:
+      - /Pool/Docker/teslamate/grafana:/var/lib/grafana
+    networks:
+      - default
+
+  mosquitto:
+    image: eclipse-mosquitto:1.6
+    restart: unless-stopped
+    environment:
+      - TZ=America/Los_Angeles
+    labels:
+      - "traefik.enable=true"
+      - "traefik.port=1883"
+      - "traefik.frontend.rule=Host:tesla-mosquitto.home.akp.tools"
+      - "traefik.frontend.auth.basic.users=" # .htaccess user/pass line. remember to escape $ (use $$ instead)
+    volumes:
+      - /Pool/Docker/teslamate/mosquitto/config:/mosquitto/config
+      - /Pool/Docker/teslamate/mosquitto/data:/mosquitto/data
+    networks:
+      - default
+
+networks:
+  default:
+    external:
+      name: traefik_net
