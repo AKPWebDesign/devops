@@ -1,0 +1,35 @@
+version: "2"
+services:
+  send:
+    image: mozilla/send:latest
+    restart: unless-stopped
+    links:
+      - redis
+    volumes:
+      - ${STORAGE_DIR}:/send
+    environment:
+      - NODE_ENV=production
+      - REDIS_HOST=redis
+      - FXA_REQUIRED=false
+      - ANON_MAX_DOWNLOADS=100
+      - ANON_MAX_FILE_SIZE=10737418240
+      - ANON_MAX_EXPIRE_SECONDS=604800
+      - BASE_URL=https://${HOST}
+      - FILE_DIR=/send
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.send.rule=Host(`${HOST}`)
+      - traefik.http.services.send.loadbalancer.server.port=1443
+      - traefik.http.routers.send.tls.certresolver=le
+      - traefik.http.routers.send.entrypoints=websecure
+    networks:
+      default:
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+    networks:
+      default:
+networks:
+  default:
+    external:
+      name: ${TRAEFIK_NETWORK}
