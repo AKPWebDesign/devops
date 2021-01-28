@@ -12,7 +12,7 @@ services:
       - REDIS_HOST=redis
       - FXA_REQUIRED=false
       - ANON_MAX_DOWNLOADS=100
-      - ANON_MAX_FILE_SIZE=10737418240
+      - ANON_MAX_FILE_SIZE=2147483648
       - ANON_MAX_EXPIRE_SECONDS=604800
       - BASE_URL=https://${HOST}
       - FILE_DIR=/send
