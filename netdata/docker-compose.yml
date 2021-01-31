@@ -3,6 +3,7 @@ services:
   netdata:
     image: netdata/netdata:latest
     restart: unless-stopped
+    hostname: ${HOSTNAME}
     cap_add:
       - SYS_PTRACE
     security_opt:
@@ -12,8 +13,14 @@ services:
       - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
       - DISCORD_RECIPIENT=${DISCORD_RECIPIENT}
     volumes:
+      - ${CONFIG_DIR}/config:/etc/netdata
+      - ${CONFIG_DIR}/lib:/var/lib/netdata
+      - ${CONFIG_DIR}/cache:/var/cache/netdata
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
     labels:
       - traefik.enable=true
