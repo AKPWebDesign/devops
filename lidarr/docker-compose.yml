@@ -1,7 +1,7 @@
 version: "2"
 services:
   lidarr:
-    image: linuxserver/lidarr:preview
+    image: linuxserver/lidarr:nightly
     volumes:
       - ${CONFIG_DIR}/lidarr:/config
       - ${DOWNLOADS_DIR}:/downloads
