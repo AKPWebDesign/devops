@@ -1,0 +1,29 @@
+version: "2"
+services:
+  stream:
+    image: gabekangas/owncast:latest
+    volumes:
+      - ${CONFIG_DIR}/stream:/app/data
+    environment:
+      - PUID=1020
+      - PGID=1020
+      - TZ=America/Los_Angeles
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.stream.rule=Host(`${HOST}`)
+      - traefik.http.services.stream.loadbalancer.server.port=8080
+      - traefik.http.routers.stream.tls.certresolver=le
+      - traefik.http.routers.stream.entrypoints=websecure
+
+      # TCP config for RTMP
+      - traefik.tcp.routers.streamrtmp.rule=HostSNI(`*`)
+      - traefik.tcp.services.streamrtmp.loadbalancer.server.port=1935
+      - traefik.tcp.routers.streamrtmp.service=streamrtmp
+      - traefik.tcp.routers.streamrtmp.entrypoints=rtmp
+    networks:
+      default:
+networks:
+  default:
+    external:
+      name: ${TRAEFIK_NETWORK}

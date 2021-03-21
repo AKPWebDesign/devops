@@ -7,6 +7,7 @@ services:
       - --global.sendAnonymousUsage=false
       - --entrypoints.web.address=:80
       - --entrypoints.websecure.address=:443
+      - --entrypoints.rtmp.address=:1935
       - --providers.docker
       - --providers.docker.exposedByDefault=false
       - --providers.file.directory=/rules/
@@ -21,6 +22,7 @@ services:
     ports:
       - 80:80
       - 443:443
+      - 1935:1935
     labels:
       - traefik.enable=true
       - traefik.http.routers.traefik.rule=Host(`${HOST}`)
