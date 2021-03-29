@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     environment:
       - TZ=America/Los_Angeles
-    ports:
-      - 1935:1935
+    # ports:
+    #   - 1935:1935
 
 # TODO: consider adding a tcp traefik config for this
