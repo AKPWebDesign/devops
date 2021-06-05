@@ -1,0 +1,27 @@
+version: "2"
+services:
+  komga:
+    image: gotson/komga:latest
+    restart: unless-stopped
+    user: 1020:1020
+    volumes:
+      - ${CONFIG_DIR}/komga:/config
+      - ${COMICS_DIR}:/data
+      - /etc/timezone:/etc/timezone
+    environment:
+      - PUID=1020
+      - PGID=1020
+      - TZ=America/Los_Angeles
+      - MAXMEM=2048
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.books.rule=Host(`${HOST}`)
+      - traefik.http.services.books.loadbalancer.server.port=8080
+      - traefik.http.routers.books.tls.certresolver=le
+      - traefik.http.routers.books.entrypoints=websecure
+    networks:
+      default:
+networks:
+  default:
+    external:
+      name: ${TRAEFIK_NETWORK}
