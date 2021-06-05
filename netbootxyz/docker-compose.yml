@@ -1,0 +1,29 @@
+version: "2.1"
+services:
+  netbootxyz:
+    image: ghcr.io/linuxserver/netbootxyz
+    container_name: netbootxyz
+    environment:
+      - PUID=1020
+      - PGID=1020
+      - TZ=America/Los_Angeles
+    volumes:
+      - ${CONFIG_DIR}/netbootxyz/config:/config
+      - ${CONFIG_DIR}/netbootxyz/assets:/assets
+    ports:
+      - 69:69/udp
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.netbootconf.rule=Host(`${HOST}`)
+      - traefik.http.routers.netbootconf.middlewares=netbootconf-auth
+      - traefik.http.services.netbootconf.loadbalancer.server.port=3000
+      - traefik.http.routers.netbootconf.tls.certresolver=le
+      - traefik.http.routers.netbootconf.entrypoints=websecure
+      - traefik.http.middlewares.netbootconf-auth.basicauth.users=${BASICAUTH}
+    networks:
+      default:
+networks:
+  default:
+    external:
+      name: ${TRAEFIK_NETWORK}
