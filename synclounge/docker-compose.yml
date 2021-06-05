@@ -1,9 +1,11 @@
 version: "2"
 services:
   synclounge:
-    image: starbix/synclounge:latest
+    image: ghcr.io/linuxserver/synclounge
+    container_name: synclounge
     restart: unless-stopped
     environment:
+      - TZ=America/Los_Angeles
       - DOMAIN=${HOST}
       - LOGSPOUT=ignore
     labels:
