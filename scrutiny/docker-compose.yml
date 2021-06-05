@@ -1,0 +1,51 @@
+version: "2.1"
+services:
+  web:
+    image: analogj/scrutiny:web
+    restart: unless-stopped
+    cap_add:
+      - SYS_RAWIO
+      - SYS_ADMIN
+    volumes:
+      - ${CONFIG_DIR}/scrutiny:/scrutiny/config
+    environment:
+      - GIN_MODE=debug
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.scrutiny.rule=Host(`${HOST}`)
+      - traefik.http.routers.scrutiny.middlewares=scrutiny-auth
+      - traefik.http.services.scrutiny.loadbalancer.server.port=8080
+      - traefik.http.routers.scrutiny.tls.certresolver=le
+      - traefik.http.routers.scrutiny.entrypoints=websecure
+      - traefik.http.middlewares.scrutiny-auth.basicauth.users=${SCRUTINY_BASICAUTH}
+    networks:
+      default:
+  collector:
+    image: analogj/scrutiny:collector
+    restart: unless-stopped
+    cap_add:
+      - SYS_RAWIO
+      - SYS_ADMIN
+    environment:
+      - SCRUTINY_API_ENDPOINT=http://web:8080
+      - SCRUTINY_WEB=true
+      - SCRUTINY_COLLECTOR=true
+    volumes:
+      - ${CONFIG_DIR}/scrutiny:/scrutiny/config
+      - /run/udev:/run/udev:ro
+    devices:
+      - /dev/sda:/dev/sda
+      - /dev/sdb:/dev/sdb
+      - /dev/sdc:/dev/sdc
+      - /dev/sdd:/dev/sdd
+      - /dev/sde:/dev/sde
+      - /dev/sdf:/dev/sdf
+      - /dev/sdg:/dev/sdg
+    networks:
+      default:
+    links:
+      - web
+networks:
+  default:
+    external:
+      name: ${TRAEFIK_NETWORK}
