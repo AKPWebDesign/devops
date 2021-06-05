@@ -1,0 +1,34 @@
+version: "2"
+services:
+  codeserver:
+    hostname: code-server
+    image: ghcr.io/linuxserver/code-server
+    restart: unless-stopped
+    volumes:
+      - ${CONFIG_DIR}/code-server:/config
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${HOME_DIR}:/config/home
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles
+      - PASSWORD=${PASSWORD}
+      - SUDO_PASSWORD=${SUDO_PASSWORD}
+      - PROXY_DOMAIN=${HOST}
+      - DOCKER_MODS=linuxserver/mods:code-server-docker|linuxserver/mods:code-server-nodejs|linuxserver/mods:code-server-npmglobal|linuxserver/mods:code-server-golang|linuxserver/mods:code-server-awscli
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.code.rule=Host(`${HOST}`) || HostRegexp(`{subdomain:[a-zA-Z0-9-]+}.${HOST}`)
+      - traefik.http.routers.code.entrypoints=websecure
+      - traefik.http.services.code.loadbalancer.server.port=8443
+
+      # TLS config
+      - traefik.http.routers.code.tls.certresolver=le
+      - traefik.http.routers.code.tls.domains[0].main=${HOST}
+      - traefik.http.routers.code.tls.domains[0].sans=*.${HOST}
+    networks:
+      default:
+networks:
+  default:
+    external:
+      name: ${TRAEFIK_NETWORK}
