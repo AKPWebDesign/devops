@@ -1,0 +1,22 @@
+version: "2"
+services:
+  locast2tuner:
+    hostname: locast2tuner
+    image: ghcr.io/wouterdebie/locast2tuner:latest
+    restart: unless-stopped
+    volumes:
+      - ${CONFIG_DIR}/locast2tuner:/app/config
+    environment:
+      - PUID=1020
+      - PGID=1020
+      - TZ=America/Los_Angeles
+    ports:
+      - 6077:6077
+    labels:
+      - traefik.enable=false
+    networks:
+      default:
+networks:
+  default:
+    external:
+      name: ${TRAEFIK_NETWORK}
