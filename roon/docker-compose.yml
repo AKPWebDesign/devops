@@ -1,0 +1,15 @@
+version: "2"
+services:
+  roon:
+    image: mikedickey/roonserver:latest
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - ${CONFIG_DIR}/roon:/var/roon
+      - ${MUSIC_DIR}:/music
+    environment:
+      - PUID=1020
+      - PGID=1020
+      - TZ=America/Los_Angeles
+    labels:
+      - traefik.enable=false
