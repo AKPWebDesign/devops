@@ -15,10 +15,16 @@ services:
       - --certificatesresolvers.le.acme.email=${LETS_ENCRYPT_EMAIL}
       - --certificatesresolvers.le.acme.storage=/acme.json
       - --certificatesresolvers.le.acme.tlschallenge=true
+      - --certificatesresolvers.le.acme.dnschallenge=true
+      - --certificatesresolvers.le.acme.dnschallenge.provider=cloudflare
+      - --certificatesresolvers.le.acme.dnschallenge.resolvers=1.1.1.1:53,8.8.8.8:53
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ${CONFIG_DIR}/traefik/acme.json:/acme.json
       - ${CONFIG_DIR}/traefik/rules/:/rules/
+    environment:
+      - CF_API_EMAIL=${CF_API_EMAIL}
+      - CF_API_KEY=${CF_API_KEY}
     ports:
       - 80:80
       - 443:443
