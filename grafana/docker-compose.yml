@@ -1,0 +1,103 @@
+version: '3'
+services:
+  grafana:
+    image: grafana/grafana:latest
+    restart: unless-stopped
+    user: "1020"
+    volumes:
+      - ${CONFIG_DIR}/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
+      - ${CONFIG_DIR}/grafana/data:/var/lib/grafana
+    environment:
+      - GF_RENDERING_SERVER_URL=http://renderer:8081/render
+      - GF_RENDERING_CALLBACK_URL=http://grafana:3000/
+      - GF_LOG_FILTERS=rendering:debug
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource,grafana-github-datasource,fzakaria-simple-annotations-datasource,grafana-googlesheets-datasource,cloudflare-app,grafana-worldmap-panel,gowee-traceroutemap-panel,vonage-status-panel,flant-statusmap-panel,natel-influx-admin-panel,pr0ps-trackmap-panel
+      - TZ=America/New_York
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.grafana.rule=Host(`${HOST}`)
+      - traefik.http.services.grafana.loadbalancer.server.port=3000
+      - traefik.http.routers.grafana.tls.certresolver=le
+      - traefik.http.routers.grafana.entrypoints=websecure
+    depends_on:
+      - prometheus
+    networks:
+      default:
+
+  renderer:
+    image: grafana/grafana-image-renderer:latest
+    restart: unless-stopped
+    user: "1020"
+    environment:
+      - TZ=America/New_York
+    networks:
+      default:
+
+  prometheus:
+    image: prom/prometheus:latest
+    restart: unless-stopped
+    user: "1020"
+    volumes:
+      - ${CONFIG_DIR}/grafana/prometheus/config:/etc/prometheus/
+      - ${CONFIG_DIR}/grafana/prometheus/data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    links:
+      - cadvisor
+      - node-exporter
+    depends_on:
+      - cadvisor
+    networks:
+      default:
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    restart: unless-stopped
+    cap_add:
+      - SYS_TIME
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - --collector.filesystem.ignored-mount-points
+      - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
+    networks:
+      default:
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    user: "1020"
+    volumes:
+      - ${CONFIG_DIR}/grafana/alertmanager/config/:/etc/alertmanager/
+      - ${CONFIG_DIR}/grafana/alertmanager/data/:/alertmanager/
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+      - '--storage.path=/alertmanager'
+    networks:
+      default:
+
+  cadvisor:
+    image: google/cadvisor:latest
+    restart: unless-stopped
+    privileged: true
+    devices:
+      - /dev/kmsg
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    networks:
+      default:
+
+networks:
+  default:
+    external:
+      name: ${TRAEFIK_NETWORK}
