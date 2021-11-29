@@ -1,11 +1,13 @@
 version: "2"
 services:
   roon:
-    image: mikedickey/roonserver:latest
+    image: steefdebruijn/docker-roonserver:latest
     restart: unless-stopped
     network_mode: host
     volumes:
-      - ${CONFIG_DIR}/roon:/var/roon
+      - ${CONFIG_DIR}/roon/app:/app
+      - ${CONFIG_DIR}/roon/data:/data
+      - ${CONFIG_DIR}/roon/backup:/backup
       - ${MUSIC_DIR}:/music
     environment:
       - PUID=1020
