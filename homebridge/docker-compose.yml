@@ -1,0 +1,26 @@
+version: "2.1"
+services:
+  homebridge:
+    image: oznu/homebridge:latest
+    volumes:
+      - ${CONFIG_DIR}/homebridge:/homebridge
+    network_mode: host
+    environment:
+      - PUID=1020
+      - PGID=1020
+      - TZ=America/New_York
+      - HOMEBRIDGE_CONFIG_UI=1
+      - HOMEBRIDGE_CONFIG_UI_PORT=8581
+    restart: unless-stopped
+    # labels:
+    #   - traefik.enable=true
+    #   - traefik.http.routers.homebridge.rule=Host(`${HOST}`)
+    #   - traefik.http.services.homebridge.loadbalancer.server.port=8581
+    #   - traefik.http.routers.homebridge.tls.certresolver=le
+    #   - traefik.http.routers.homebridge.entrypoints=websecure
+#     networks:
+#       default:
+# networks:
+#   default:
+#     external:
+#       name: ${TRAEFIK_NETWORK}
