@@ -3,7 +3,7 @@ services:
   spotify:
     image: docker.pkg.github.com/akpwebdesign/spotify-widget/spotify-widget:latest
     environment:
-      - TZ=America/Los_Angeles
+      - TZ=America/New_York
     restart: unless-stopped
     labels:
       - traefik.enable=true

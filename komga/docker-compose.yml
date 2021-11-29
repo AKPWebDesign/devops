@@ -11,7 +11,7 @@ services:
     environment:
       - PUID=1020
       - PGID=1020
-      - TZ=America/Los_Angeles
+      - TZ=America/New_York
       - MAXMEM=2048
     labels:
       - traefik.enable=true

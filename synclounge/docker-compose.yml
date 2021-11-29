@@ -5,7 +5,7 @@ services:
     container_name: synclounge
     restart: unless-stopped
     environment:
-      - TZ=America/Los_Angeles
+      - TZ=America/New_York
       - DOMAIN=${HOST}
       - LOGSPOUT=ignore
     labels:

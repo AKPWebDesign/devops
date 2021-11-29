@@ -10,6 +10,6 @@ services:
     environment:
       - PUID=1020
       - PGID=1020
-      - TZ=America/Los_Angeles
+      - TZ=America/New_York
     labels:
       - traefik.enable=false

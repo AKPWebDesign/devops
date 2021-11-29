@@ -15,7 +15,7 @@ services:
       - MQTT_HOST=mosquitto
       - VIRTUAL_HOST=${HOST}
       - CHECK_ORIGIN=true
-      - TZ=America/Los_Angeles
+      - TZ=America/New_York
     volumes:
       - ${CONFIG_DIR}/teslamate/import/:/opt/app/import
     labels:

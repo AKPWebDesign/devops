@@ -1,9 +1,9 @@
 version: "2"
 services:
   musicbot:
-    image: docker.pkg.github.com/akpwebdesign/octave/music-bot:latest
+    image: ghcr.io/akpwebdesign/octave/music-bot:latest
     environment:
-      - TZ=America/Los_Angeles
+      - TZ=America/New_York
     volumes:
       - ${CONFIG_DIR}/musicbot/config:/app/config
     restart: unless-stopped

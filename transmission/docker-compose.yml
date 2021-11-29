@@ -6,7 +6,7 @@ services:
     environment:
       - PUID=1020
       - PGID=1020
-      - TZ=America/Los_Angeles
+      - TZ=America/New_York
       - TRANSMISSION_WEB_HOME=/transmission-web-control/ #optional
       - USER=${USER} #optional
       - PASS=${PASS} #optional

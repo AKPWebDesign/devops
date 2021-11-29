@@ -10,7 +10,7 @@ services:
     environment:
       PGID: '1020'
       PUID: '1020'
-      TZ: America/Los_Angeles
+      TZ: America/New_York
     labels:
       - traefik.enable=true
       - traefik.http.routers.portainer.rule=Host(`${HOST}`)
