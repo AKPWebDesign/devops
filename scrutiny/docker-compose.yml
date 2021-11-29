@@ -41,6 +41,7 @@ services:
       - /dev/sde:/dev/sde
       - /dev/sdf:/dev/sdf
       - /dev/sdg:/dev/sdg
+      - /dev/sdh:/dev/sdh
     networks:
       default:
     links:
