@@ -5,8 +5,8 @@ services:
     restart: unless-stopped
     network_mode: host
     volumes:
-      - ${CONFIG_DIR}/plex:/config
-      - ${CONFIG_DIR}/plex/transcode:/transcode
+      - ${CONFIG_DIR}/plex/config:/config
+      - ${CONFIG_DIR}/plex/tmp:/tmp
       - ${MOVIES_DIR}:/movies
       - ${TV_DIR}:/tv
       - ${MUSIC_DIR}:/music
