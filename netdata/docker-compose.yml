@@ -10,8 +10,6 @@ services:
       - apparmor:unconfined
     environment:
       - PGID=999
-      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
-      - DISCORD_RECIPIENT=${DISCORD_RECIPIENT}
     volumes:
       - ${CONFIG_DIR}/config:/etc/netdata
       - ${CONFIG_DIR}/lib:/var/lib/netdata
