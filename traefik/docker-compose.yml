@@ -13,7 +13,6 @@ services:
       - --metrics
       - --metrics.prometheus.buckets=0.1,0.3,1.2,5.0
       - --metrics.prometheus.addRoutersLabels=true
-      - --metrics.prometheus.manualRouting=true
       - --pilot.token=${TRAEFIK_PILOT_TOKEN}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -23,16 +22,9 @@ services:
       - 80:80
     labels:
       - traefik.enable=true
-
-      # dashboard
       - traefik.http.routers.traefik.rule=Host(`${HOST}`)
       - traefik.http.routers.traefik.service=api@internal
       - traefik.http.routers.traefik.entrypoints=web
-
-      # metrics
-      - traefik.http.routers.traefik-metrics.rule=Host(`${HOST}`) && Path(`/metrics`)
-      - traefik.http.routers.traefik-metrics.service=prometheus@internal
-
     networks:
       default:
 

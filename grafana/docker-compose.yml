@@ -68,18 +68,6 @@ services:
     networks:
       default:
 
-  alertmanager:
-    image: prom/alertmanager:latest
-    user: "1020"
-    volumes:
-      - ${CONFIG_DIR}/grafana/alertmanager/config/:/etc/alertmanager/
-      - ${CONFIG_DIR}/grafana/alertmanager/data/:/alertmanager/
-    command:
-      - '--config.file=/etc/alertmanager/config.yml'
-      - '--storage.path=/alertmanager'
-    networks:
-      default:
-
   cadvisor:
     image: google/cadvisor:latest
     restart: unless-stopped
