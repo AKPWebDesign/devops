@@ -15,8 +15,6 @@ services:
       - traefik.enable=true
       - traefik.http.routers.sonarr.rule=Host(`${HOST}`)
       - traefik.http.services.sonarr.loadbalancer.server.port=8989
-      - traefik.http.routers.sonarr.tls.certresolver=le
-      - traefik.http.routers.sonarr.entrypoints=websecure
     networks:
       default:
 networks:

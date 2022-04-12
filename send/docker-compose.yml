@@ -22,8 +22,6 @@ services:
       - traefik.enable=true
       - traefik.http.routers.send.rule=Host(`${HOST}`)
       - traefik.http.services.send.loadbalancer.server.port=1443
-      - traefik.http.routers.send.tls.certresolver=le
-      - traefik.http.routers.send.entrypoints=websecure
     networks:
       default:
   redis:

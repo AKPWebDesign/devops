@@ -15,8 +15,6 @@ services:
       - traefik.enable=true
       - traefik.http.routers.mylar3.rule=Host(`${HOST}`)
       - traefik.http.services.mylar3.loadbalancer.server.port=8090
-      - traefik.http.routers.mylar3.tls.certresolver=le
-      - traefik.http.routers.mylar3.entrypoints=websecure
     networks:
       default:
 networks:

@@ -16,8 +16,6 @@ services:
     #   - traefik.enable=true
     #   - traefik.http.routers.homebridge.rule=Host(`${HOST}`)
     #   - traefik.http.services.homebridge.loadbalancer.server.port=8581
-    #   - traefik.http.routers.homebridge.tls.certresolver=le
-    #   - traefik.http.routers.homebridge.entrypoints=websecure
 #     networks:
 #       default:
 # networks:

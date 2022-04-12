@@ -13,11 +13,7 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.scrutiny.rule=Host(`${HOST}`)
-      - traefik.http.routers.scrutiny.middlewares=scrutiny-auth
       - traefik.http.services.scrutiny.loadbalancer.server.port=8080
-      - traefik.http.routers.scrutiny.tls.certresolver=le
-      - traefik.http.routers.scrutiny.entrypoints=websecure
-      - traefik.http.middlewares.scrutiny-auth.basicauth.users=${SCRUTINY_BASICAUTH}
     networks:
       default:
   collector:

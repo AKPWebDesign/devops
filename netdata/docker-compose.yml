@@ -24,10 +24,6 @@ services:
       - traefik.enable=true
       - traefik.http.routers.netdata.rule=Host(`${HOST}`)
       - traefik.http.services.netdata.loadbalancer.server.port=19999
-      - traefik.http.routers.netdata.middlewares=netdata-admin
-      - traefik.http.routers.netdata.tls.certresolver=le
-      - traefik.http.routers.netdata.entrypoints=websecure
-      - traefik.http.middlewares.netdata-admin.basicauth.users=${NETDATA_BASICAUTH}
     networks:
       default:
 networks:

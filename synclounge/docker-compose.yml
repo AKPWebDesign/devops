@@ -17,13 +17,6 @@ services:
       # web server (HTTP)
       - traefik.http.routers.synclounge.rule=Host(`${HOST}`)
       - traefik.http.routers.synclounge.service=synclounge
-      - traefik.http.routers.synclounge.entrypoints=web
-
-      # web server (SSL)
-      - traefik.http.routers.synclounge-ssl.rule=Host(`${HOST}`)
-      - traefik.http.routers.synclounge-ssl.service=synclounge
-      - traefik.http.routers.synclounge-ssl.tls.certresolver=le
-      - traefik.http.routers.synclounge-ssl.entrypoints=websecure
 
       # socket server service
       - traefik.http.services.synclounge-svr.loadbalancer.server.port=8089
@@ -31,14 +24,6 @@ services:
       # socket server (HTTP)
       - traefik.http.routers.synclounge-svr.rule=Host(`${HOST}`) && Path(`/slserver`)
       - traefik.http.routers.synclounge-svr.service=synclounge-svr
-      - traefik.http.routers.synclounge-svr.entrypoints=web
-
-      # socket server (SSL)
-      - traefik.http.routers.synclounge-svr-ssl.rule=Host(`${HOST}`) && Path(`/slserver`)
-      - traefik.http.routers.synclounge-svr-ssl.service=synclounge-svr
-      - traefik.http.routers.synclounge-svr-ssl.tls.certresolver=le
-      - traefik.http.routers.synclounge-svr-ssl.entrypoints=websecure
-
 
     networks:
       default:

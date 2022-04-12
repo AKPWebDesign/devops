@@ -13,16 +13,13 @@ services:
       - traefik.enable=true
       - traefik.http.routers.bitbucket.rule=Host(`${HOST}`)
       - traefik.http.services.bitbucket.loadbalancer.server.port=7990
-      - traefik.http.routers.bitbucket.tls.certresolver=le
-      - traefik.http.routers.bitbucket.entrypoints=websecure
-    # TODO: tcp config to allow git from outside network
     ports:
       - 7999:7999
     networks:
       default:
     depends_on:
-      - db
-  db:
+      - bb-db
+  bb-db:
     image: postgres:11
     volumes:
       - ${CONFIG_DIR}/bitbucket/db:/var/lib/postgresql/data

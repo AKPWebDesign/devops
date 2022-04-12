@@ -14,8 +14,6 @@ services:
       - traefik.enable=true
       - traefik.http.routers.jackett.rule=Host(`${HOST}`)
       - traefik.http.services.jackett.loadbalancer.server.port=9117
-      - traefik.http.routers.jackett.tls.certresolver=le
-      - traefik.http.routers.jackett.entrypoints=websecure
     networks:
       default:
 networks:

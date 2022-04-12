@@ -12,7 +12,6 @@ services:
     labels:
       - traefik.enable=false
     #   - traefik.http.routers.annamereviews.rule=Host(`${HOST}`)
-    #   - traefik.http.routers.annamereviews.entrypoints=web
     #   - traefik.http.services.annamereviews.loadbalancer.server.port=2368
     networks:
       default:

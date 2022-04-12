@@ -18,8 +18,6 @@ services:
       - traefik.enable=true
       - traefik.http.routers.xteve.rule=Host(`${HOST}`)
       - traefik.http.services.xteve.loadbalancer.server.port=34400
-      - traefik.http.routers.xteve.entrypoints=websecure
-      - traefik.http.routers.xteve.tls.certresolver=le
     networks:
       default:
 networks:

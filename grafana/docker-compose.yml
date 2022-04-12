@@ -17,8 +17,6 @@ services:
       - traefik.enable=true
       - traefik.http.routers.grafana.rule=Host(`${HOST}`)
       - traefik.http.services.grafana.loadbalancer.server.port=3000
-      - traefik.http.routers.grafana.tls.certresolver=le
-      - traefik.http.routers.grafana.entrypoints=websecure
     depends_on:
       - prometheus
     networks:

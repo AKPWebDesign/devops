@@ -15,8 +15,6 @@ services:
       - traefik.enable=true
       - traefik.http.routers.portainer.rule=Host(`${HOST}`)
       - traefik.http.services.portainer.loadbalancer.server.port=9000
-      - traefik.http.routers.portainer.tls.certresolver=le
-      - traefik.http.routers.portainer.entrypoints=websecure
     networks:
       default:
 networks:

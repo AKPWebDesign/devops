@@ -1,52 +1,28 @@
 version: "2"
 services:
   traefik:
-    image: traefik:v2.3
+    image: traefik:v2.7
     restart: unless-stopped
     command:
       - --global.sendAnonymousUsage=false
       - --entrypoints.web.address=:80
-      - --entrypoints.websecure.address=:443
-      - --entrypoints.rtmp.address=:1935
       - --providers.docker
       - --providers.docker.exposedByDefault=false
       - --providers.file.directory=/rules/
       - --api
-      - --certificatesresolvers.le.acme.email=${LETS_ENCRYPT_EMAIL}
-      - --certificatesresolvers.le.acme.storage=/acme.json
-      - --certificatesresolvers.le.acme.tlschallenge=true
-      - --certificatesresolvers.le.acme.dnschallenge=true
-      - --certificatesresolvers.le.acme.dnschallenge.provider=cloudflare
-      - --certificatesresolvers.le.acme.dnschallenge.resolvers=1.1.1.1:53,8.8.8.8:53
       - --metrics
       - --metrics.prometheus.buckets=0.1,0.3,1.2,5.0
+      - --pilot.token=${TRAEFIK_PILOT_TOKEN}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ${CONFIG_DIR}/traefik/acme.json:/acme.json
       - ${CONFIG_DIR}/traefik/rules/:/rules/
-    environment:
-      - CF_API_EMAIL=${CF_API_EMAIL}
-      - CF_API_KEY=${CF_API_KEY}
     ports:
       - 80:80
-      - 443:443
-      - 1935:1935
     labels:
       - traefik.enable=true
       - traefik.http.routers.traefik.rule=Host(`${HOST}`)
       - traefik.http.routers.traefik.service=api@internal
-      - traefik.http.routers.traefik.middlewares=traefik-admin
-      - traefik.http.routers.traefik.tls.certresolver=le
-      - traefik.http.routers.traefik.entrypoints=websecure
-      - traefik.http.middlewares.traefik-admin.basicauth.users=${TRAEFIK_API_BASICAUTH}
-
-      # middleware to redirect to https
-      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
-
-      # add global redirect to https
-      - traefik.http.routers.redirs.rule=HostRegexp(`{host:^[^(?:synclounge)].+}`)
-      - traefik.http.routers.redirs.entrypoints=web
-      - traefik.http.routers.redirs.middlewares=redirect-to-https
     networks:
       default:
 

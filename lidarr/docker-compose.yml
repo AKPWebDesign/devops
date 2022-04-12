@@ -15,8 +15,6 @@ services:
       - traefik.enable=true
       - traefik.http.routers.lidarr.rule=Host(`${HOST}`)
       - traefik.http.services.lidarr.loadbalancer.server.port=8686
-      - traefik.http.routers.lidarr.tls.certresolver=le
-      - traefik.http.routers.lidarr.entrypoints=websecure
     networks:
       default:
 networks:

@@ -17,8 +17,6 @@ services:
       - traefik.enable=true
       - traefik.http.routers.books.rule=Host(`${HOST}`)
       - traefik.http.services.books.loadbalancer.server.port=8080
-      - traefik.http.routers.books.tls.certresolver=le
-      - traefik.http.routers.books.entrypoints=websecure
     networks:
       default:
 networks:

@@ -13,8 +13,6 @@ services:
       - traefik.enable=true
       - traefik.http.routers.tautulli.rule=Host(`${HOST}`)
       - traefik.http.services.tautulli.loadbalancer.server.port=8181
-      - traefik.http.routers.tautulli.tls.certresolver=le
-      - traefik.http.routers.tautulli.entrypoints=websecure
     networks:
       default:
 networks:
