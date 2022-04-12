@@ -23,6 +23,7 @@ services:
       - traefik.enable=true
       - traefik.http.routers.traefik.rule=Host(`${HOST}`)
       - traefik.http.routers.traefik.service=api@internal
+      - traefik.http.routers.traefik.entrypoints=web
     networks:
       default:
 
