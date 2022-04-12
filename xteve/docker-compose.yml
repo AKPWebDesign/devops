@@ -1,0 +1,28 @@
+version: "2"
+services:
+  xteve:
+    image: alturismo/xteve:latest
+    container_name: xteve
+    restart: unless-stopped
+    volumes:
+      - ${CONFIG_DIR}/xteve/config:/config:rw
+      - ${CONFIG_DIR}/xteve/profile:/root/.xteve:rw
+      - /dev/shm:/tmp/xteve
+    environment:
+      - PUID=1020
+      - PGID=1020
+      - TZ=America/New_York
+    ports:
+      - 34400:34400
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.xteve.rule=Host(`${HOST}`)
+      - traefik.http.services.xteve.loadbalancer.server.port=34400
+      - traefik.http.routers.xteve.entrypoints=websecure
+      - traefik.http.routers.xteve.tls.certresolver=le
+    networks:
+      default:
+networks:
+  default:
+    external:
+      name: ${TRAEFIK_NETWORK}

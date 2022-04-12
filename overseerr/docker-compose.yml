@@ -1,0 +1,24 @@
+version: "2"
+services:
+  overseerr:
+    image: sctx/overseerr:develop
+    restart: unless-stopped
+    volumes:
+      - ${CONFIG_DIR}/overseerr:/app/config
+    environment:
+      - PUID=1020
+      - PGID=1020
+      - LOG_LEVEL=debug
+      - TZ=America/New_York
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.overseerr.rule=Host(`${HOST}`)
+      - traefik.http.services.overseerr.loadbalancer.server.port=5055
+      - traefik.http.routers.overseerr.tls.certresolver=le
+      - traefik.http.routers.overseerr.entrypoints=websecure
+    networks:
+      default:
+networks:
+  default:
+    external:
+      name: ${TRAEFIK_NETWORK}

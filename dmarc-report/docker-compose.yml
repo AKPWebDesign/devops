@@ -1,0 +1,51 @@
+version: "2"
+services:
+  dmarc:
+    image: "gutmensch/dmarc-report:latest"
+    restart: unless-stopped
+    container_name: dmarc
+    depends_on:
+      - dmarc-db
+    environment:
+      - TZ=America/New_York
+      - REPORT_DB_HOST=dmarc-db
+      - REPORT_DB_PORT=3306
+      - REPORT_DB_NAME=${DB_NAME}
+      - REPORT_DB_USER=${DB_USER}
+      - REPORT_DB_PASS=${DB_PASS}
+      - PARSER_IMAP_SERVER=${IMAP_SERVER}
+      - PARSER_IMAP_PORT=${IMAP_PORT}
+      - PARSER_IMAP_SSL=1
+      - PARSER_IMAP_TLS=0
+      - PARSER_IMAP_USER=${IMAP_USER}
+      - PARSER_IMAP_PASS=${IMAP_PASS}
+      - PARSER_IMAP_READ_FOLDER=${IMAP_READ_FOLDER}
+      - PARSER_IMAP_MOVE_FOLDER=${IMAP_MOVE_FOLDER}
+      - PARSER_IMAP_MOVE_FOLDER_ERR=${IMAP_MOVE_FOLDER_ERR}
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.dmarc.rule=Host(`${HOST}`)
+      - traefik.http.services.dmarc.loadbalancer.server.port=80
+      - traefik.http.routers.dmarc.entrypoints=websecure
+      - traefik.http.routers.dmarc.tls.certresolver=le
+    networks:
+      default:
+
+  dmarc-db:
+    image: mariadb:10
+    command: --skip-innodb-read-only-compressed
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASS}
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASS}
+    volumes:
+      - ${CONFIG_DIR}/dmarc/db:/var/lib/mysql
+    networks:
+      default:
+
+
+networks:
+  default:
+    external:
+      name: ${TRAEFIK_NETWORK}

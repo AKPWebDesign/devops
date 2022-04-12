@@ -1,0 +1,25 @@
+version: "2"
+services:
+  jellyfin:
+    image: linuxserver/jellyfin:latest
+    container_name: jellyfin
+    restart: unless-stopped
+    volumes:
+      - ${CONFIG_DIR}/jellyfin:/config
+    environment:
+      - PUID=1020
+      - PGID=1020
+      - TZ=America/New_York
+      - JELLYFIN_PublishedServerUrl=${HOST}
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.jellyfin.rule=Host(`${HOST}`)
+      - traefik.http.services.jellyfin.loadbalancer.server.port=8096
+      - traefik.http.routers.jellyfin.entrypoints=websecure
+      - traefik.http.routers.jellyfin.tls.certresolver=le
+    networks:
+      default:
+networks:
+  default:
+    external:
+      name: ${TRAEFIK_NETWORK}
