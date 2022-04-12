@@ -1,0 +1,17 @@
+version: "2"
+services:
+  cloudflared:
+    image: cloudflare/cloudflared:2022.3.4
+    restart: unless-stopped
+    container_name: cloudflared
+    command: 'tunnel --config /etc/cloudflared/config.yaml run'
+    user: root
+    volumes:
+      - ${CONFIG_DIR}:/etc/cloudflared/
+    networks:
+      default:
+
+networks:
+  default:
+    external:
+      name: ${TRAEFIK_NETWORK}
