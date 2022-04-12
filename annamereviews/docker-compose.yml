@@ -1,0 +1,22 @@
+version: '3.1'
+services:
+  annamereviews:
+    image: ghost:4.36.3-alpine
+    restart: unless-stopped
+    environment:
+      url: https://${HOST}/
+    volumes:
+      - ${CONFIG_DIR}/annamereviews:/var/lib/ghost/content
+    # Intentionally not using Traefik for this because Ghost doesn't play nicely with SSL redirecting.
+    # Traffic goes directly to the container from the Cloudflare tunnel instead.
+    labels:
+      - traefik.enable=false
+    #   - traefik.http.routers.annamereviews.rule=Host(`${HOST}`)
+    #   - traefik.http.routers.annamereviews.entrypoints=web
+    #   - traefik.http.services.annamereviews.loadbalancer.server.port=2368
+    networks:
+      default:
+networks:
+  default:
+    external:
+      name: ${TRAEFIK_NETWORK}
