@@ -1,0 +1,29 @@
+version: "2"
+services:
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent
+    restart: unless-stopped
+    environment:
+      - PUID=1020
+      - PGID=1020
+      - TZ=America/New_York
+      - WEBUI_PORT=8080
+    volumes:
+      - ${CONFIG_DIR}/qbittorrent:/config
+      - ${DOWNLOADS_DIR}/qbittorrent:/downloads
+    ports:
+      - 51414:51414
+      - 51414:51414/udp
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.qbittorrent.rule=Host(`${HOST}`)
+      - traefik.http.services.qbittorrent.loadbalancer.server.port=8080
+      - traefik.http.routers.qbittorrent.tls.certresolver=le
+      - traefik.http.routers.qbittorrent.entrypoints=websecure
+    networks:
+      default:
+
+networks:
+  default:
+    external:
+      name: ${TRAEFIK_NETWORK}
