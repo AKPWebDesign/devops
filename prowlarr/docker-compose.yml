@@ -1,19 +1,18 @@
-version: "2"
+version: "2.1"
 services:
-  jackett:
-    image: linuxserver/jackett:development
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:develop
     restart: unless-stopped
     volumes:
-      - ${CONFIG_DIR}/jackett:/config
-      - ${DOWNLOADS_DIR}:/downloads
+      - ${CONFIG_DIR}/prowlarr:/config
     environment:
       - PUID=1020
       - PGID=1020
       - TZ=America/New_York
     labels:
       - traefik.enable=true
-      - traefik.http.routers.jackett.rule=Host(`${HOST}`)
-      - traefik.http.services.jackett.loadbalancer.server.port=9117
+      - traefik.http.routers.prowlarr.rule=Host(`${HOST}`)
+      - traefik.http.services.prowlarr.loadbalancer.server.port=9696
     networks:
       default:
 networks:
