@@ -4,6 +4,7 @@ services:
   teslamate:
     image: teslamate/teslamate:latest
     restart: unless-stopped
+    hostname: ${HOST}
     depends_on:
       - database
       - mosquitto
@@ -13,11 +14,13 @@ services:
       - DATABASE_NAME=${TM_DB_NAME}
       - DATABASE_HOST=database
       - MQTT_HOST=mosquitto
+      - ENCRYPTION_KEY=${TM_ENCRYPTION_KEY}
       - VIRTUAL_HOST=${HOST}
       - CHECK_ORIGIN=true
       - TZ=America/New_York
-    volumes:
-      - ${CONFIG_DIR}/teslamate/import/:/opt/app/import
+    # uncomment if importing data
+    # volumes:
+    # - ./import/:/opt/app/import
     labels:
       - traefik.enable=true
       # SSL router setup
@@ -36,6 +39,7 @@ services:
   database:
     image: postgres:13
     restart: unless-stopped
+    hostname: teslamate-database
     environment:
       - POSTGRES_USER=${TM_DB_USER}
       - POSTGRES_PASSWORD=${TM_DB_PASS}
@@ -45,36 +49,10 @@ services:
     networks:
       default:
 
-  grafana:
-    image: teslamate/grafana:latest
-    restart: unless-stopped
-    depends_on:
-      - database
-    environment:
-      - DATABASE_USER=${TM_DB_USER}
-      - DATABASE_PASS=${TM_DB_PASS}
-      - DATABASE_NAME=${TM_DB_NAME}
-      - DATABASE_HOST=database
-      - GRAFANA_PASSWD=${GRAFANA_PW}
-      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER}
-      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PW}
-      - GF_AUTH_ANONYMOUS_ENABLED=false
-      - GF_SERVER_DOMAIN=${HOST}
-      - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s/grafana
-      - GF_SERVER_SERVE_FROM_SUB_PATH=true
-    volumes:
-      - teslamate-grafana-data:/var/lib/grafana
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.tm-grafana.rule=Host(`${HOST}`) && (Path(`/grafana`) || PathPrefix(`/grafana/`))
-      - traefik.http.routers.tm-grafana.service=tm-grafana
-      - traefik.http.services.tm-grafana.loadbalancer.server.port=3000
-    networks:
-      default:
-
   mosquitto:
     image: eclipse-mosquitto:1.6
     restart: unless-stopped
+    hostname: teslamate-mosquitto
     volumes:
       - teslamate-mosquitto-conf:/mosquitto/config
       - teslamate-mosquitto-data:/mosquitto/data
@@ -87,7 +65,6 @@ services:
       default:
 
 volumes:
-  teslamate-grafana-data:
   teslamate-mosquitto-conf:
   teslamate-mosquitto-data:
 
