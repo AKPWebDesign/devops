@@ -3,6 +3,7 @@ services:
   xteve:
     image: alturismo/xteve:latest
     container_name: xteve
+    hostname: ${HOST}
     restart: unless-stopped
     volumes:
       - ${CONFIG_DIR}/xteve/config:/config:rw

@@ -1,8 +1,9 @@
 version: "2"
 services:
   komga:
-    image: gotson/komga:latest
+    image: gotson/komga:latest-legacy
     restart: unless-stopped
+    hostname: ${HOST}
     user: 1020:1020
     volumes:
       - ${CONFIG_DIR}/komga:/config
@@ -12,7 +13,6 @@ services:
       - PUID=1020
       - PGID=1020
       - TZ=America/New_York
-      - MAXMEM=2048
     labels:
       - traefik.enable=true
       - traefik.http.routers.books.rule=Host(`${HOST}`)

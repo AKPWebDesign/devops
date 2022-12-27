@@ -2,9 +2,10 @@ version: "2"
 services:
   cloudflared:
     image: cloudflare/cloudflared:latest
+    hostname: cloudflared
     restart: unless-stopped
     container_name: cloudflared
-    command: 'tunnel --config /etc/cloudflared/config.yaml run'
+    command: "tunnel --config /etc/cloudflared/config.yaml run"
     user: root
     volumes:
       - ${CONFIG_DIR}:/etc/cloudflared/

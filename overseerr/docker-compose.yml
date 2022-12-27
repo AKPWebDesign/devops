@@ -3,6 +3,7 @@ services:
   overseerr:
     image: sctx/overseerr:develop
     restart: unless-stopped
+    hostname: ${HOST}
     volumes:
       - ${CONFIG_DIR}/overseerr:/app/config
     environment:

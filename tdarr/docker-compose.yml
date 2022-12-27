@@ -2,6 +2,7 @@ version: "2.1"
 services:
   tdarr:
     image: haveagitgat/tdarr:latest
+    hostname: ${HOST}
     volumes:
       - ${CONFIG_DIR}/tdarr/server:/app/server
       - ${CONFIG_DIR}/tdarr/configs:/app/configs

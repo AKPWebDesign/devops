@@ -3,6 +3,7 @@ services:
   traefik:
     image: traefik:v2.7
     restart: unless-stopped
+    hostname: ${HOST}
     command:
       - --global.sendAnonymousUsage=false
       - --entrypoints.web.address=:80

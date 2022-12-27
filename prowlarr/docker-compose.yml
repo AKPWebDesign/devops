@@ -3,6 +3,7 @@ services:
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:develop
     restart: unless-stopped
+    hostname: ${HOST}
     volumes:
       - ${CONFIG_DIR}/prowlarr:/config
     environment:

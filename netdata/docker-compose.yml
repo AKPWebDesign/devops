@@ -3,13 +3,16 @@ services:
   netdata:
     image: netdata/netdata:latest
     restart: unless-stopped
-    hostname: ${HOSTNAME}
+    hostname: ${HOST}
     cap_add:
       - SYS_PTRACE
     security_opt:
       - apparmor:unconfined
     environment:
       - PGID=999
+      - NETDATA_CLAIM_TOKEN=${NETDATA_CLAIM_TOKEN}
+      - NETDATA_CLAIM_URL=${NETDATA_CLAIM_URL}
+      - NETDATA_CLAIM_ROOMS= # intentionally left blank
     volumes:
       - ${CONFIG_DIR}/config:/etc/netdata
       - ${CONFIG_DIR}/lib:/var/lib/netdata

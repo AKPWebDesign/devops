@@ -2,6 +2,7 @@ version: "2"
 services:
   sonarr4k:
     image: linuxserver/sonarr:develop
+    hostname: ${HOST}
     volumes:
       - ${CONFIG_DIR}/sonarr4k:/config
       - ${DOWNLOADS_DIR}:/downloads

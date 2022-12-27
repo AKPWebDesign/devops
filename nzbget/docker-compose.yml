@@ -3,6 +3,7 @@ services:
   nzbget:
     image: linuxserver/nzbget:latest
     restart: unless-stopped
+    hostname: ${HOST}
     volumes:
       - ${CONFIG_DIR}/nzbget:/config
       - ${DOWNLOADS_DIR}/nzbget/:/downloads/

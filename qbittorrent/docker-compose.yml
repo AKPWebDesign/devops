@@ -3,6 +3,7 @@ services:
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:14.3.9
     restart: unless-stopped
+    hostname: ${HOST}
     environment:
       - PUID=1020
       - PGID=1020

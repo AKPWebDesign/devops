@@ -2,6 +2,7 @@ version: "2"
 services:
   logspout:
     image: gliderlabs/logspout:latest
+    hostname: logspout
     command: "${SYSLOG_DEST}"
     restart: always
     volumes:

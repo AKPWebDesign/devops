@@ -3,6 +3,7 @@ services:
   send:
     image: mozilla/send:latest
     restart: unless-stopped
+    hostname: ${HOST}
     links:
       - redis
     volumes:
@@ -27,6 +28,7 @@ services:
   redis:
     image: redis:alpine
     restart: unless-stopped
+    hostname: moz-send-redis
     networks:
       default:
 networks:

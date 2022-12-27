@@ -3,6 +3,7 @@ services:
   radarr:
     image: linuxserver/radarr:latest
     restart: unless-stopped
+    hostname: ${HOST}
     volumes:
       - ${CONFIG_DIR}/radarr:/config
       - ${DOWNLOADS_DIR}:/downloads

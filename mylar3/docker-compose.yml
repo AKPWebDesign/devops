@@ -3,6 +3,7 @@ services:
   mylar3:
     image: linuxserver/mylar3:nightly
     restart: unless-stopped
+    hostname: ${HOST}
     volumes:
       - ${CONFIG_DIR}/mylar3:/config
       - ${DOWNLOADS_DIR}:/downloads

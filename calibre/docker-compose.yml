@@ -1,0 +1,43 @@
+version: "2.1"
+services:
+  calibre:
+    image: lscr.io/linuxserver/calibre:latest
+    restart: unless-stopped
+    hostname: ${VM_HOST}
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      - PUID=1020
+      - PGID=1020
+      - TZ=America/New_York
+    volumes:
+      - ${CONFIG_DIR}/calibre/app:/config
+      - ${BOOKS_DIR}:/books
+      - ${DOWNLOADS_DIR}/books:/import
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.calibre.rule=Host(`${VM_HOST}`)
+      - traefik.http.services.calibre.loadbalancer.server.port=8080
+    networks:
+      default:
+  calibre-web:
+    image: lscr.io/linuxserver/calibre-web:0.6.18
+    hostname: ${HOST}
+    restart: unless-stopped
+    environment:
+      - PUID=1020
+      - PGID=1020
+      - TZ=America/New_York
+    volumes:
+      - ${CONFIG_DIR}/calibre/web:/config
+      - ${BOOKS_DIR}:/books
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.calibre-web.rule=Host(`${HOST}`)
+      - traefik.http.services.calibre-web.loadbalancer.server.port=8083
+    networks:
+      default:
+networks:
+  default:
+    external:
+      name: ${TRAEFIK_NETWORK}

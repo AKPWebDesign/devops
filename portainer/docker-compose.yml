@@ -3,13 +3,14 @@ services:
   portainer:
     image: portainer/portainer-ce
     restart: always
+    hostname: ${HOST}
     privileged: true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ${CONFIG_DIR}/portainer:/data
     environment:
-      PGID: '1020'
-      PUID: '1020'
+      PGID: "1020"
+      PUID: "1020"
       TZ: America/New_York
     labels:
       - traefik.enable=true

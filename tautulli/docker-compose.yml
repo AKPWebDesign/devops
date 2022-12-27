@@ -3,6 +3,7 @@ services:
   tautulli:
     image: linuxserver/tautulli:develop
     restart: unless-stopped
+    hostname: ${HOST}
     volumes:
       - ${CONFIG_DIR}/tautulli:/config
     environment:

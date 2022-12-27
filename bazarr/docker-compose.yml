@@ -3,6 +3,7 @@ services:
   bazarr:
     image: linuxserver/bazarr:latest
     restart: unless-stopped
+    hostname: ${HOST}
     volumes:
       - ${CONFIG_DIR}/bazarr:/config
       - ${MOVIES_DIR}:/movies

@@ -3,6 +3,7 @@ services:
   netbootxyz:
     image: ghcr.io/linuxserver/netbootxyz
     container_name: netbootxyz
+    hostname: ${HOST}
     environment:
       - PUID=1020
       - PGID=1020

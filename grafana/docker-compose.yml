@@ -1,17 +1,25 @@
-version: '3'
+version: "3"
 services:
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana-oss:latest
     restart: unless-stopped
+    hostname: ${HOST}
     user: "1020"
     volumes:
       - ${CONFIG_DIR}/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
       - ${CONFIG_DIR}/grafana/data:/var/lib/grafana
+      - ${CONFIG_DIR}/grafana/plugins:/plugins
     environment:
       - GF_RENDERING_SERVER_URL=http://renderer:8081/render
       - GF_RENDERING_CALLBACK_URL=http://grafana:3000/
       - GF_LOG_FILTERS=rendering:debug
-      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource,grafana-github-datasource,fzakaria-simple-annotations-datasource,grafana-googlesheets-datasource,cloudflare-app,grafana-worldmap-panel,gowee-traceroutemap-panel,vonage-status-panel,flant-statusmap-panel,natel-influx-admin-panel,pr0ps-trackmap-panel
+      - GF_PATHS_PLUGINS=/plugins
+      - GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=natel-discrete-panel,pr0ps-trackmap-panel,panodata-map-panel,natel-plotly-panel
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource,grafana-github-datasource,fzakaria-simple-annotations-datasource,grafana-googlesheets-datasource,cloudflare-app,grafana-worldmap-panel,gowee-traceroutemap-panel,vonage-status-panel,flant-statusmap-panel,natel-influx-admin-panel,pr0ps-trackmap-panel,natel-discrete-panel,natel-plotly-panel,https://github.com/panodata/panodata-map-panel/releases/download/0.16.0/panodata-map-panel-0.16.0.zip;grafana-worldmap-panel-ng,grafana-piechart-panel
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_ANALYTICS_REPORTING_ENABLED=false
+      - GF_SECURITY_ALLOW_EMBEDDING=true
+      - GF_DEFAULT_FORCE_MIGRATION=true
       - TZ=America/New_York
     labels:
       - traefik.enable=true
@@ -24,6 +32,7 @@ services:
 
   renderer:
     image: grafana/grafana-image-renderer:latest
+    hostname: grafana-image-renderer
     restart: unless-stopped
     user: "1020"
     environment:
@@ -34,15 +43,16 @@ services:
   prometheus:
     image: prom/prometheus:latest
     restart: unless-stopped
+    hostname: grafana-prometheus
     user: "1020"
     volumes:
       - ${CONFIG_DIR}/grafana/prometheus/config:/etc/prometheus/
       - ${CONFIG_DIR}/grafana/prometheus/data:/prometheus
     command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
-      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+      - "--web.console.templates=/usr/share/prometheus/consoles"
     links:
       - cadvisor
       - node-exporter
@@ -54,6 +64,7 @@ services:
   node-exporter:
     image: prom/node-exporter:latest
     restart: unless-stopped
+    hostname: grafana-node-exporter
     cap_add:
       - SYS_TIME
     volumes:
@@ -61,8 +72,8 @@ services:
       - /sys:/host/sys:ro
       - /:/rootfs:ro
     command:
-      - '--path.procfs=/host/proc'
-      - '--path.sysfs=/host/sys'
+      - "--path.procfs=/host/proc"
+      - "--path.sysfs=/host/sys"
       - --collector.filesystem.ignored-mount-points
       - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
     networks:

@@ -2,6 +2,7 @@ version: "2"
 services:
   lidarr:
     image: linuxserver/lidarr:nightly
+    hostname: ${HOST}
     volumes:
       - ${CONFIG_DIR}/lidarr:/config
       - ${DOWNLOADS_DIR}:/downloads

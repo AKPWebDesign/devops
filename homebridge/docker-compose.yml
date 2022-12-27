@@ -2,6 +2,7 @@ version: "2.1"
 services:
   homebridge:
     image: oznu/homebridge:latest
+    hostname: ${HOST}
     volumes:
       - ${CONFIG_DIR}/homebridge:/homebridge
     network_mode: host

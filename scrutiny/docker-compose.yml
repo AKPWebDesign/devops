@@ -1,33 +1,55 @@
-version: "2.1"
+version: "2.4"
 services:
-  web:
-    image: analogj/scrutiny:web
+  influxdb:
+    image: influxdb:2.2
+    hostname: scrutiny-influx
     restart: unless-stopped
-    cap_add:
-      - SYS_RAWIO
-      - SYS_ADMIN
+    ports:
+      - "8086:8086"
     volumes:
-      - ${CONFIG_DIR}/scrutiny:/scrutiny/config
+      - "${CONFIG_DIR}/scrutiny/influxdb:/var/lib/influxdb2"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/health"]
+      interval: 5s
+      timeout: 10s
+      retries: 20
+    networks:
+      default:
+
+  web:
+    image: ghcr.io/analogj/scrutiny:master-web
+    restart: unless-stopped
+    hostname: ${HOST}
+    volumes:
+      - ${CONFIG_DIR}/scrutiny:/opt/scrutiny/config
     environment:
-      - GIN_MODE=debug
+      - SCRUTINY_WEB_INFLUXDB_HOST=influxdb
     labels:
       - traefik.enable=true
       - traefik.http.routers.scrutiny.rule=Host(`${HOST}`)
       - traefik.http.services.scrutiny.loadbalancer.server.port=8080
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health"]
+      interval: 5s
+      timeout: 10s
+      retries: 20
+      start_period: 10s
+    depends_on:
+      influxdb:
+        condition: service_healthy
     networks:
       default:
+
   collector:
-    image: analogj/scrutiny:collector
+    image: ghcr.io/analogj/scrutiny:master-collector
     restart: unless-stopped
+    hostname: scrutiny-collector
     cap_add:
       - SYS_RAWIO
       - SYS_ADMIN
     environment:
-      - SCRUTINY_API_ENDPOINT=http://web:8080
-      - SCRUTINY_WEB=true
-      - SCRUTINY_COLLECTOR=true
+      - COLLECTOR_API_ENDPOINT=http://web:8080
     volumes:
-      - ${CONFIG_DIR}/scrutiny:/scrutiny/config
       - /run/udev:/run/udev:ro
     devices:
       - /dev/sda:/dev/sda
@@ -38,10 +60,15 @@ services:
       - /dev/sdf:/dev/sdf
       - /dev/sdg:/dev/sdg
       - /dev/sdh:/dev/sdh
+      - /dev/sdi:/dev/sdi
+      - /dev/sdj:/dev/sdj
+      - /dev/sdk:/dev/sdk
+      - /dev/sdl:/dev/sdl
     networks:
       default:
-    links:
-      - web
+    depends_on:
+      web:
+        condition: service_healthy
 networks:
   default:
     external:

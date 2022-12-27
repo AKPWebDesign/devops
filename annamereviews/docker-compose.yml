@@ -1,6 +1,7 @@
-version: '3.1'
+version: "3.1"
 services:
   annamereviews:
+    hostname: ${HOST}
     image: ghost:4.36.3-alpine
     restart: unless-stopped
     environment:

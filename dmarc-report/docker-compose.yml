@@ -4,6 +4,7 @@ services:
     image: "gutmensch/dmarc-report:latest"
     restart: unless-stopped
     container_name: dmarc
+    hostname: ${HOST}
     depends_on:
       - dmarc-db
     environment:
@@ -30,8 +31,11 @@ services:
       default:
 
   dmarc-db:
-    image: mariadb:10
+    # TODO: fix this, use an actual image version again. Latest known working is 10.7.3-focal?
+    image: mariadb@sha256:07e06f2e7ae9dfc63707a83130a62e00167c827f08fcac7a9aa33f4b6dc34e0e
     command: --skip-innodb-read-only-compressed
+    restart: unless-stopped
+    hostname: dmarc-db
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASS}
       - MYSQL_DATABASE=${DB_NAME}
@@ -41,7 +45,6 @@ services:
       - ${CONFIG_DIR}/dmarc/db:/var/lib/mysql
     networks:
       default:
-
 
 networks:
   default:

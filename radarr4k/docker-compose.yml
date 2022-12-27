@@ -2,6 +2,7 @@ version: "2"
 services:
   radarr4k:
     image: linuxserver/radarr:latest
+    hostname: ${HOST}
     volumes:
       - ${CONFIG_DIR}/radarr4k:/config
       - ${DOWNLOADS_DIR}:/downloads

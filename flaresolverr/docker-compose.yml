@@ -3,6 +3,7 @@ services:
   flaresolverr:
     image: ghcr.io/flaresolverr/flaresolverr:latest
     restart: unless-stopped
+    hostname: flaresolverr
     environment:
       - LOG_LEVEL=info
       - TZ=America/New_York

@@ -1,0 +1,24 @@
+version: "2.1"
+services:
+  readarr:
+    image: lscr.io/linuxserver/readarr:develop
+    restart: unless-stopped
+    hostname: ${HOST}
+    environment:
+      - PUID=1020
+      - PGID=1020
+      - TZ=America/New_York
+    volumes:
+      - ${CONFIG_DIR}/readarr:/config
+      - ${BOOKS_DIR}:/books
+      - ${DOWNLOADS_DIR}:/downloads
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.readarr.rule=Host(`${HOST}`)
+      - traefik.http.services.readarr.loadbalancer.server.port=8787
+    networks:
+      default:
+networks:
+  default:
+    external:
+      name: ${TRAEFIK_NETWORK}

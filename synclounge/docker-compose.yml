@@ -4,6 +4,7 @@ services:
     image: ghcr.io/linuxserver/synclounge
     container_name: synclounge
     restart: unless-stopped
+    hostname: ${HOST}
     environment:
       - TZ=America/New_York
       - DOMAIN=${HOST}
