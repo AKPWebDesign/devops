@@ -23,5 +23,4 @@ services:
       default:
 networks:
   default:
-    external:
-      name: ${TRAEFIK_NETWORK}
+    name: ${TRAEFIK_NETWORK}
