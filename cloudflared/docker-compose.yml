@@ -5,7 +5,7 @@ services:
     hostname: cloudflared
     restart: unless-stopped
     container_name: cloudflared
-    command: "tunnel --config /etc/cloudflared/config.yaml run"
+    command: "tunnel run --token ${CF_TOKEN}"
     user: root
     volumes:
       - ${CONFIG_DIR}:/etc/cloudflared/
