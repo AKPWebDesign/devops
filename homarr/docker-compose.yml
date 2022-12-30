@@ -1,0 +1,19 @@
+version: "3"
+services:
+  homarr:
+    image: ghcr.io/ajnart/homarr:latest
+    restart: unless-stopped
+    hostname: ${HOST}
+    volumes:
+      - ${CONFIG_DIR}/homarr/configs:/app/data/configs
+      - ${CONFIG_DIR}/homarr/icons:/app/public/icons
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.homarr.rule=Host(`${HOST}`)
+      - traefik.http.services.homarr.loadbalancer.server.port=7575
+    networks:
+      default:
+networks:
+  default:
+    name: ${TRAEFIK_NETWORK}
