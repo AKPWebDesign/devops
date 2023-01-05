@@ -1,0 +1,10 @@
+version: "2"
+services:
+  bind9:
+    image: internetsystemsconsortium/bind9:9.18
+    hostname: bind9
+    restart: unless-stopped
+    container_name: bind9
+    network_mode: host
+    volumes:
+      - ${CONFIG_DIR}/bind9/named.conf.options:/etc/bind/named.conf.options
