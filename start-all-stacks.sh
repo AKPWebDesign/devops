@@ -5,7 +5,7 @@ for D in *; do
         if [ -f "./.no-autoupdate" ]; then
             echo ".no-autoupdate exists, skipping $D."
         else
-           docker compose restart;
+           docker compose up -d;
         fi
         cd ../;
     fi
