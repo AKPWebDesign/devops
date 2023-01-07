@@ -1,8 +1,0 @@
-version: "2"
-services:
-  middle-finger-bot:
-    hostname: middle-finger-bot
-    image: ghcr.io/akp-tools/middle-finger-bot/middle-finger-bot:latest
-    environment:
-      - DISCORD_TOKEN=${DISCORD_TOKEN}
-    restart: unless-stopped

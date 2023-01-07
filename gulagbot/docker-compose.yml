@@ -1,9 +1,0 @@
-version: "2"
-services:
-  gulagbot:
-    image: ghcr.io/akpwebdesign/gulag-bot/gulag-bot:latest
-    hostname: gulagbot
-    environment:
-      - TOKEN=${DISCORD_TOKEN}
-      - TZ=America/New_York
-    restart: unless-stopped
