@@ -80,8 +80,9 @@ services:
       default:
 
   cadvisor:
-    image: google/cadvisor:latest
+    image: gcr.io/cadvisor/cadvisor:latest
     restart: unless-stopped
+    hostname: cadvisor
     privileged: true
     devices:
       - /dev/kmsg
