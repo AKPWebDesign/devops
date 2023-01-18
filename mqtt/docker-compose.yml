@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  mosquitto:
+    image: eclipse-mosquitto:1.6
+    restart: unless-stopped
+    hostname: mosquitto
+    ports:
+      - 1883:1883
+    volumes:
+      - mosquitto-conf:/mosquitto/config
+      - mosquitto-data:/mosquitto/data
+    labels:
+      - traefik.enable=false
+    networks:
+      default:
+
+volumes:
+  mosquitto-conf:
+  mosquitto-data:
