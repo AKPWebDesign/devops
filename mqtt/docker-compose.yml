@@ -12,8 +12,6 @@ services:
       - mosquitto-data:/mosquitto/data
     labels:
       - traefik.enable=false
-    networks:
-      default:
 
 volumes:
   mosquitto-conf:
