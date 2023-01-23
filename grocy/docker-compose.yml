@@ -1,0 +1,21 @@
+version: "3.8"
+services:
+  grocy:
+    image: lscr.io/linuxserver/grocy:latest
+    restart: unless-stopped
+    hostname: ${HOST}
+    volumes:
+      - ${CONFIG_DIR}/grocy:/config
+    environment:
+      - PUID=1020
+      - PGID=1020
+      - TZ=America/New_York
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.grocy.rule=Host(`${HOST}`)
+      - traefik.http.services.grocy.loadbalancer.server.port=80
+    networks:
+      default:
+networks:
+  default:
+    name: ${TRAEFIK_NETWORK}
