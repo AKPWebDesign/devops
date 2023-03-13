@@ -1,0 +1,46 @@
+version: "3.9"
+services:
+  monica:
+    image: monica:apache
+    restart: unless-stopped
+    hostname: ${HOST}
+    depends_on:
+      - monica-db
+    environment:
+      - APP_KEY=${APP_KEY}
+      - DB_HOST=monica-db
+      - DB_DATABASE=monica
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - LOG_CHANNEL=stderr
+      - CACHE_DRIVER=database
+      - SESSION_DRIVER=database
+      - QUEUE_DRIVER=sync
+    volumes:
+      - ${CONFIG_DIR}/monica/app:/var/www/html/storage
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.monica.rule=Host(`${HOST}`)
+      - traefik.http.services.monica.loadbalancer.server.port=80
+      - traefik.http.middlewares.monica-mw.replacepathregex.regex=^/\.well-known/(?:carddav|caldav)
+      - traefik.http.middlewares.monica-mw.replacepathregex.replacement=/dav/
+      - traefik.http.middlewares.monica-mw-2.replacepathregex.regex=%40
+      - traefik.http.middlewares.monica-mw-2.replacepathregex.replacement=@
+      - traefik.http.routers.monica.middlewares=monica-mw@docker,monica-mw-2@docker
+
+  monica-db:
+    image: mysql:8.0
+    restart: unless-stopped
+    hostname: monica-db
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=true
+      - MYSQL_DATABASE=monica
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - ${CONFIG_DIR}/monica/db:/var/lib/mysql
+
+networks:
+  default:
+    name: ${TRAEFIK_NETWORK}
+    external: true
