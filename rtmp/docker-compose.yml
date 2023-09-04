@@ -1,0 +1,10 @@
+version: "2"
+services:
+  rtmp:
+    image: tiangolo/nginx-rtmp:latest
+    restart: unless-stopped
+    hostname: nginx-rtmp
+    environment:
+      - TZ=America/New_York
+    ports:
+      - 1935:1935
