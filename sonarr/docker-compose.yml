@@ -6,8 +6,8 @@ services:
     hostname: ${HOST}
     volumes:
       - ${CONFIG_DIR}/sonarr:/config
-      - ${DOWNLOADS_DIR}:/downloads
-      - ${TV_DIR}:/tv
+      - ${DOWNLOADS_DIR}:/data/downloads
+      - ${TV_DIR}:/data/tv
     environment:
       - PUID=1020
       - PGID=1020

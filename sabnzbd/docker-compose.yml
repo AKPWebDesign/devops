@@ -6,8 +6,8 @@ services:
     hostname: ${HOST}
     volumes:
       - ${CONFIG_DIR}/sabnzbd:/config
-      - ${DOWNLOADS_DIR}/sabnzbd/complete:/downloads/
-      - ${DOWNLOADS_DIR}/sabnzbd/incomplete:/incomplete-downloads/
+      - ${DOWNLOADS_DIR}/sabnzbd/complete:/data/downloads/
+      - ${DOWNLOADS_DIR}/sabnzbd/incomplete:/data/incomplete-downloads/
     environment:
       - PUID=1020
       - PGID=1020

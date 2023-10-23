@@ -6,8 +6,8 @@ services:
     hostname: ${HOST}
     volumes:
       - ${CONFIG_DIR}/radarr:/config
-      - ${DOWNLOADS_DIR}:/downloads
-      - ${MOVIES_DIR}:/movies
+      - ${DOWNLOADS_DIR}:/data/downloads
+      - ${MOVIES_DIR}:/data/movies
     environment:
       - PUID=1020
       - PGID=1020

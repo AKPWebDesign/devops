@@ -5,8 +5,8 @@ services:
     hostname: ${HOST}
     volumes:
       - ${CONFIG_DIR}/lidarr:/config
-      - ${DOWNLOADS_DIR}:/downloads
-      - ${MUSIC_DIR}:/music
+      - ${DOWNLOADS_DIR}:/data/downloads
+      - ${MUSIC_DIR}:/data/music
     environment:
       - PUID=1020
       - PGID=1020
