@@ -4,7 +4,7 @@ services:
     image: golift/unpackerr
     container_name: unpackerr
     volumes:
-      - ${DOWNLOADS_DIR}:/data/downloads
+      - ${MEDIA_DIR}/downloads:/data/downloads
     restart: always
     user: 1020:1020
     environment:

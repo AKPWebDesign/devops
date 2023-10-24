@@ -13,7 +13,7 @@ services:
     volumes:
       - ${CONFIG_DIR}/calibre/app:/config
       - ${BOOKS_DIR}:/data/books
-      - ${DOWNLOADS_DIR}/books:/data/import
+      - ${MEDIA_DIR}/downloads/books:/data/import
     labels:
       - traefik.enable=true
       - traefik.http.routers.calibre.rule=Host(`${VM_HOST}`)

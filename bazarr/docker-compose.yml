@@ -6,8 +6,8 @@ services:
     hostname: ${HOST}
     volumes:
       - ${CONFIG_DIR}/bazarr:/config
-      - ${MOVIES_DIR}:/movies
-      - ${TV_DIR}:/tv
+      - ${MEDIA_DIR}/movies:/movies
+      - ${MEDIA_DIR}/tv:/tv
     environment:
       - PUID=1020
       - PGID=1020

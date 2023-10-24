@@ -11,7 +11,7 @@ services:
     volumes:
       - ${CONFIG_DIR}/readarr:/config
       - ${BOOKS_DIR}:/data/books
-      - ${DOWNLOADS_DIR}:/data/downloads
+      - ${MEDIA_DIR}/downloads:/data/downloads
     labels:
       - traefik.enable=true
       - traefik.http.routers.readarr.rule=Host(`${HOST}`)

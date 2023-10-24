@@ -5,8 +5,7 @@ services:
     hostname: ${HOST}
     volumes:
       - ${CONFIG_DIR}/sonarr4k:/config
-      - ${DOWNLOADS_DIR}:/data/downloads
-      - ${TV_DIR}:/data/tv
+      - ${MEDIA_DIR}:/data
     environment:
       - PUID=1020
       - PGID=1020

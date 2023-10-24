@@ -20,6 +20,6 @@ services:
       - NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
     volumes:
       - ${CONFIG_DIR}/plex/config:/config
-      - ${POOL_DIR}/Movies:/movies
-      - ${POOL_DIR}/TVShows:/tv
-      - ${POOL_DIR}/Music:/music
+      - ${MEDIA_DIR}/movies:/movies
+      - ${MEDIA_DIR}/tv:/tv
+      - ${MEDIA_DIR}/music:/music

@@ -6,7 +6,7 @@ services:
     hostname: ${HOST}
     volumes:
       - ${CONFIG_DIR}/mylar3:/config
-      - ${DOWNLOADS_DIR}:/downloads
+      - ${MEDIA_DIR}/downloads:/downloads
       - ${COMICS_DIR}:/comics
     environment:
       - PUID=1020
