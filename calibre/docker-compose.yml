@@ -40,3 +40,4 @@ services:
 networks:
   default:
     name: ${TRAEFIK_NETWORK}
+    external: true
