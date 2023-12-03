@@ -9,7 +9,7 @@ services:
       - ${CONFIG_DIR}/roon/app:/app
       - ${CONFIG_DIR}/roon/data:/data
       - ${CONFIG_DIR}/roon/backup:/backup
-      - ${MUSIC_DIR}:/music
+      - ${MEDIA_DIR}/music:/music
     environment:
       - PUID=1020
       - PGID=1020
