@@ -1,7 +1,7 @@
 version: "2"
 services:
   logspout:
-    image: gliderlabs/logspout:latest
+    image: gliderlabs/logspout:v3.1 # using older version because latest causes CPU usage issues with dockerd suddenly?
     hostname: logspout
     command: "${SYSLOG_DEST}"
     restart: always
