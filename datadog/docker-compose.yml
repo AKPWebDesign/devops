@@ -1,0 +1,43 @@
+version: '3'
+services:
+  datadog:
+    build: .
+    cgroup: host
+    environment:
+      - DD_SYSTEM_PROBE_NETWORK_ENABLED=true
+      - DD_PROCESS_AGENT_ENABLED=true
+      - DD_API_KEY=${DD_API_KEY}
+      - DD_APM_ENABLED=true
+      - DD_APM_NON_LOCAL_TRAFFIC=true
+      - DD_LOGS_ENABLED=true
+      - DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true
+      - DD_DOGSTATSD_STATS_ENABLE=true
+      - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true
+      - DD_SITE=datadoghq.com
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /proc/:/host/proc/:ro
+      - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
+      - /sys/kernel/debug:/sys/kernel/debug
+      - /opt/datadog-agent/run:/opt/datadog-agent/run:rw
+      - ./conf.d:/conf.d:rw
+    cap_add:
+      - SYS_ADMIN
+      - SYS_RESOURCE
+      - SYS_PTRACE
+      - NET_ADMIN
+      - NET_BROADCAST
+      - NET_RAW
+      - IPC_LOCK
+      - CHOWN
+    security_opt:
+      - apparmor:unconfined
+    labels:
+      - traefik.enable=false
+    networks:
+      default:
+networks:
+  default:
+    name: ${TRAEFIK_NETWORK}
+    external: true

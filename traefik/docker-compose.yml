@@ -1,7 +1,7 @@
 version: "2"
 services:
   traefik:
-    image: traefik:v2.7
+    image: traefik:v2.10
     restart: unless-stopped
     hostname: ${HOST}
     command:
@@ -12,8 +12,10 @@ services:
       - --providers.file.directory=/rules/
       - --api
       - --metrics
-      - --metrics.prometheus.buckets=0.1,0.3,1.2,5.0
-      - --metrics.prometheus.addRoutersLabels=true
+      - --metrics.datadog=true
+      - --metrics.datadog.address=datadog:8125
+      - --tracing.datadog=true
+      - --tracing.datadog.localAgentHostPort=datadog:8126
       - --pilot.token=${TRAEFIK_PILOT_TOKEN}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -32,3 +34,4 @@ services:
 networks:
   default:
     name: ${TRAEFIK_NETWORK}
+    external: true
