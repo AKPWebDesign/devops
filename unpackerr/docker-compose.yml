@@ -3,6 +3,7 @@ services:
   unpackerr:
     image: golift/unpackerr
     container_name: unpackerr
+    hostname: unpackerr
     volumes:
       - ${MEDIA_DIR}/downloads:/data/downloads
     restart: always

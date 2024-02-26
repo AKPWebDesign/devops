@@ -1,8 +1,11 @@
-version: '3'
+version: "3"
 services:
   datadog:
     build: .
+    hostname: datadog-agent
+    container_name: datadog-agent
     cgroup: host
+    restart: always
     environment:
       - DD_SYSTEM_PROBE_NETWORK_ENABLED=true
       - DD_PROCESS_AGENT_ENABLED=true
