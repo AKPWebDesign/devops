@@ -1,0 +1,74 @@
+version: "3.8"
+services:
+  ts-horde:
+    image: tailscale/tailscale:latest
+    restart: always
+    hostname: horde
+    container_name: ts-horde
+    environment:
+      - TS_AUTHKEY=${TS_AUTHKEY}
+      - TS_AUTH_ONCE=true
+      - TS_HOSTNAME=horde
+      - TS_STATE_DIR=/var/lib/tailscale
+    ports:
+      - 13340:13340
+    volumes:
+      - ${LOCAL_CONFIG_DIR}/tailscale:/var/lib/tailscale
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+      - sys_module
+    networks:
+      - backend
+      - default
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.horde.rule=Host(`${HOST}`)
+      - traefik.http.services.horde.loadbalancer.server.port=13340
+      - traefik.docker.network=${TRAEFIK_NETWORK}
+
+  mongodb:
+    image: mongo:7.0.5-jammy
+    hostname: horde-mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    command: --quiet --logpath /dev/null
+    volumes:
+      - ${CONFIG_DIR}/mongodb:/data/db
+    networks:
+      - backend
+
+  redis:
+    image: redis:6.2-alpine
+    hostname: horde-redis
+    restart: always
+    command: redis-server --save 60 1 --port 30002 --loglevel warning
+    volumes:
+      - ${LOCAL_CONFIG_DIR}/redis:/data
+    networks:
+      - backend
+
+  horde-server:
+    image: ghcr.io/akp-tools/horde-server:latest
+    restart: always
+    environment:
+      Horde__HttpPort: 13340
+      Horde__Http2Port: 13342
+      Horde__RedisConnectionConfig: horde-redis:30002
+      Horde__DatabaseConnectionString: mongodb://${MONGO_USER}:${MONGO_PASSWORD}@horde-mongodb:27017/horde?authSource=admin
+      Horde__JwtIssuer: ${HOST}
+      Horde__ServerUrl: https://${HOST}
+      Horde__DashboardUrl: https://${HOST}
+      Horde__EnableNewAgentsByDefault: true
+    volumes:
+      - ${CONFIG_DIR}/server:/app/Data
+    network_mode: service:ts-horde
+
+networks:
+  backend:
+    driver: bridge
+  default:
+    name: ${TRAEFIK_NETWORK}
+    external: true
